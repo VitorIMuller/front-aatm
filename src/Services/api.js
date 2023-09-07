@@ -44,6 +44,27 @@ async function excluirCliente(id) {
     return promise;
 }
 
+// CLIENTES 
+async function listarcaminhoes() {
+    const promise = await axios.get(`${BASE_URL}/frota`)
+    return promise;
+}
+
+async function criarCaminhao(formData) {
+    const promise = await axios.post(`${BASE_URL}/frota`, formData)
+    return promise;
+}
+
+async function editarCaminhao(formData) {
+    const promise = await axios.patch(`${BASE_URL}/frota/${formData._id}`, formData)
+    return promise;
+}
+
+async function excluirCaminhao(id) {
+    const promise = await axios.delete(`${BASE_URL}/frota/${id}`)
+    return promise;
+}
+
 
 
 
@@ -56,5 +77,9 @@ export {
     listarClientes,
     criarCliente,
     editarCliente,
-    excluirCliente
+    excluirCliente,
+    listarcaminhoes,
+    criarCaminhao,
+    editarCaminhao,
+    excluirCaminhao
 }

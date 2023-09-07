@@ -229,7 +229,7 @@ export default function Clientes() {
                         </Typography>
                         {selectedClient && (
                             <Typography variant="body1">
-                                Tem certeza que deseja excluir o caminhão {selectedClient.nome}?
+                                Tem certeza que deseja excluir o cliente {selectedClient.nome}?
                             </Typography>
                         )}
                         <div style={{ display: "flex", justifyContent: 'end', marginTop: '10px' }}>

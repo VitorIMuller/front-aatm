@@ -46,7 +46,7 @@ export default function Motorsitas() {
         setOpenModalDeleteMotorista(false);
     }
 
-    function getCaminhoes() {
+    function getMotoristas() {
         api.listarMotoristas().then((response) => {
             setMotoristas(response.data)
         })
@@ -162,7 +162,7 @@ export default function Motorsitas() {
     }
 
     useEffect(() => {
-        getCaminhoes()
+        getMotoristas()
     }, [])
 
     return (
@@ -211,7 +211,7 @@ export default function Motorsitas() {
                         </Typography>
                         {selectedClient && (
                             <Typography variant="body1">
-                                Tem certeza que deseja excluir o caminhão {selectedClient.nome}?
+                                Tem certeza que deseja excluir o motorista {selectedClient.nome}?
                             </Typography>
                         )}
                         <div style={{ display: "flex", justifyContent: 'end', marginTop: '10px' }}>
