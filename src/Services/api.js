@@ -35,7 +35,7 @@ async function criarCliente(formData) {
 }
 
 async function editarCliente(formData) {
-    const promise = await axios.patch(`${BASE_URL}/clientes/${formData.id}`, formData)
+    const promise = await axios.patch(`${BASE_URL}/clientes/${formData._id}`, formData)
     return promise;
 }
 
