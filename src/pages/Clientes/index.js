@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import * as api from "./../../Services/api"
 import Swal from "sweetalert2";
-
+import CNPJTextField from "../../components/cnpjTextField";
 export default function Clientes() {
 
     const [clientes, setClientes] = useState([]);
@@ -14,7 +14,13 @@ export default function Clientes() {
     const [openModalEditCliente, setOpenModalEditCliente] = useState(false);
     const [openModalDeleteCliente, setOpenModalDeleteCliente] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
-    const [novoCliente, setNovoCliente] = useState({});
+    const [novoCliente, setNovoCliente] = useState({
+        nome: '',
+        email: '',
+        cpf_cnpj: '',
+        valor_frete_sj: '',
+        valor_frete_lp: ''
+    });
     const [loading, setLoading] = useState(false);
 
     const handleNovoCliente = () => {
@@ -57,34 +63,43 @@ export default function Clientes() {
 
         setLoading(true)
 
-        const formData = {
-            nome: novoCliente.nome,
-            cpf: 1,
-            telefone: 1,
-            status: true
-        }
+        console.log(novoCliente)
+        const requiredFields = ['nome', 'email', 'cpf_cnpj'];
+        const emptyFields = requiredFields.filter((field) => !novoCliente[field]);
 
-        api.criarMotorista(formData).then((response) => {
-            setClientes((prevData) => [...prevData, response.data.motorista])
-            Swal.fire({
-                position: 'bottom-end',
-                icon: 'success',
-                title: `${response.data.msg}`,
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }).catch((err) => {
+        if (emptyFields.length > 0) {
             Swal.fire({
                 position: 'bottom-end',
                 icon: 'error',
-                title: 'Ops! Ocorreu algum erro!',
+                title: `Os campos ${emptyFields.join(', ')} são obrigatórios.`,
                 showConfirmButton: false,
                 timer: 1500
             })
-        })
-        setLoading(false)
-        setNovoCliente({});
-        handleModalCloseNovoCliente();
+            setLoading(false)
+        } else {
+            
+            api.criarCliente(novoCliente).then((response) => {
+                setClientes((prevData) => [...prevData, response.data.cliente])
+                Swal.fire({
+                    position: 'bottom-end',
+                    icon: 'success',
+                    title: `${response.data.msg}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }).catch((err) => {
+                Swal.fire({
+                    position: 'bottom-end',
+                    icon: 'error',
+                    title: 'Ops! Ocorreu algum erro!',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+            setLoading(false)
+            setNovoCliente({});
+            handleModalCloseNovoCliente();
+        }
     }
 
     function editMotorista(e) {
@@ -258,7 +273,7 @@ export default function Clientes() {
                             <TextField
                                 label="Nome"
                                 value={novoCliente.nome}
-                                onChange={(e) => setNovoCliente({ ...setNovoCliente, nome: e.target.value })}
+                                onChange={(e) => setNovoCliente({ ...novoCliente, nome: e.target.value })}
                                 fullWidth
                                 margin="normal"
                                 size="small"
@@ -267,39 +282,41 @@ export default function Clientes() {
                         <div style={{display: 'flex', gap: '10px'}}>
                             <TextField
                                 label="Email"
-                                value={novoCliente.nome}
-                                onChange={(e) => setNovoCliente({ ...setNovoCliente, nome: e.target.value })}
+                                value={novoCliente.email}
+                                onChange={(e) => setNovoCliente({ ...novoCliente, email: e.target.value })}
                                 fullWidth
                                 margin="normal"
                                 size="small"
                                 required
                                 />
-                            <TextField
-                                label="Cnpj"
-                                value={novoCliente.nome}
-                                onChange={(e) => setNovoCliente({ ...setNovoCliente, nome: e.target.value })}
+                            <CNPJTextField
+                                label="CNPJ"
+                                value={novoCliente.cpf_cnpj}
+                                onChange={(e) => setNovoCliente({ ...novoCliente, cpf_cnpj: e.target.value })}
                                 fullWidth
-                                margin="normal"
+                                variant="outlined"
                                 size="small"
-                                required
+                                margin="normal"
                             />
                         </div>
-                        <div>
+                        <div style={{ display: 'flex', gap: '10px' }}>
                             <TextField
-                                label="Telefone"
-                                value={novoCliente.nome}
-                                onChange={(e) => setNovoCliente({ ...setNovoCliente, nome: e.target.value })}
+                                label="Valor por Kg Romaneio"
+                                value={novoCliente.valor_frete_sj}
+                                onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_sj: e.target.value })}
                                 fullWidth
                                 margin="normal"
                                 size="small"
+                                type="number"
                             />
                             <TextField
-                                label="Nomes"
-                                value={novoCliente.nome}
-                                onChange={(e) => setNovoCliente({ ...setNovoCliente, nome: e.target.value })}
+                                label="Valor por Kg CTE"
+                                value={novoCliente.valor_frete_lp}
+                                onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_lp: e.target.value })}
                                 fullWidth
                                 margin="normal"
                                 size="small"
+                                type="number"
                             />
                         </div>
                         <Button variant="outlined" color="primary" onClick={handleModalCloseNovoCliente} style={{ marginRight: '10px' }}>
