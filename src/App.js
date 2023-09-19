@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Clientes from "./pages/Clientes"
 import Viagens from "./pages/Viagens"
 import Motoristas from "./pages/Motoristas"
+import NovaViagem from "./pages/Viagens/nova-viagem"
 
 export default function App() {
     return (
@@ -15,6 +16,7 @@ export default function App() {
                 <Route path="/frota" element={<Frota />} />
                 <Route path="/clientes" element={<Clientes />} />
                 <Route path="/viagens" element={<Viagens />} />
+                <Route path="/nova-viagem" element={<NovaViagem />} />
                 <Route path="/motoristas" element={<Motoristas />} />
             </Routes>
         </Router>

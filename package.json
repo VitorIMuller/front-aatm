@@ -22,7 +22,10 @@
     "react-text-mask": "^5.5.0",
     "react-toastify": "^9.0.3",
     "styled-components": "^5.3.5",
-    "sweetalert2": "^11.7.27"
+    "sweetalert2": "^11.7.27",
+    "xml-js": "^1.6.11",
+    "xml2js": "^0.4.23",
+    "xml2json": "^0.12.0"
   },
   "scripts": {
     "start": "react-scripts start",
