@@ -23,7 +23,6 @@ const FileUploader = (props) => {
             }
         }
         // Agora 'data' contém os objetos JavaScript representando os XML
-        console.log(data)
         const arrFormatada = formatItensXml(data)
         console.log(arrFormatada)
         setParsedData(arrFormatada);
@@ -33,9 +32,34 @@ const FileUploader = (props) => {
 
     const formatItensXml = (ctes) => {
         return ctes.map((cte) => {
-            console.log(cte.protCTe.infProt.chCTe['#text'])
+            // PEGAR TOMADOR
+            let tomador;
+            if (cte.CTe.infCte.ide.toma3.toma['#text'] === 0) {
+                tomador = {
+                    cnpj: cte.CTe.infCte.rem.CNPJ['#text'],
+                    nome: cte.CTe.infCte.rem.xNome['#text'],
+                    endereco: {
+                        cidade: cte.CTe.infCte.rem.enderReme.xMun['#text'],
+                        uf: cte.CTe.infCte.rem.enderReme.UF['#text']
+                    },
+                }
+            } else if (cte.CTe.infCte.ide.toma3.toma['#text'] === 1) {
+                tomador = {
+                    cnpj: cte.CTe.infCte.dest.CNPJ['#text'],
+                    nome: cte.CTe.infCte.dest.xNome['#text'],
+                    endereco: {
+                        cidade: cte.CTe.infCte.dest.enderDest.xMun['#text'],
+                        uf: cte.CTe.infCte.dest.enderDest.UF['#text']
+                    },
+                }
+            }
+
             return {
-                chave: cte.protCTe.infProt.chCTe['#text'],
+                infos_cte: {
+                    chave: cte.protCTe.infProt.chCTe['#text'],
+                    numero: cte.CTe.infCte.ide.nCT['#text'],
+                    data_emissao: cte.CTe.infCte.ide.dhEmi['#text'],
+                },
                 remetente: {
                     cnpj: cte.CTe.infCte.rem.CNPJ['#text'],
                     nome: cte.CTe.infCte.rem.xNome['#text'],
@@ -51,6 +75,13 @@ const FileUploader = (props) => {
                         cidade: cte.CTe.infCte.dest.enderDest.xMun['#text'],
                         uf: cte.CTe.infCte.dest.enderDest.UF['#text']
                     },
+                },
+                tomador: tomador,
+                info_frete: {
+                    valor_carga: cte.CTe.infCte.infCTeNorm.infCarga.VCarga['#text'],
+                    peso_carga: cte.CTe.infCte.infCTeNorm.infCarga.infQ.find((carga) => carga.tpMed['#text'] === 'PESO BRUTO').qCarga['#text'],
+                    unidade_carga: cte.CTe.infCte.infCTeNorm.infCarga.infQ.find((carga) => carga.tpMed['#text'] === 'UNIDADE').qCarga['#text'],
+                    valor_frete_cte: cte.CTe.infCte.VPrest.Comp.VComp['#text']
                 }
             }
         })
