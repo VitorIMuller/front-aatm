@@ -260,11 +260,6 @@ export default function Viagens() {
                         </div>
                     </div>
                 </Modal>
-                <Modal open={openModalNovoCaminhao} onClose={handleModalNovoCaminhao}>
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
-                        <FileUploader/>
-                    </div>
-                </Modal>
             </ContainerBig>
         </>
     )

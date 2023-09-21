@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Button, Paper, Typography } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Button } from '@mui/material';
 
-const FileUploader = () => {
+const FileUploader = (props) => {
     const [files, setFiles] = useState([]);
     const [parsedData, setParsedData] = useState([]);
 
@@ -23,10 +22,39 @@ const FileUploader = () => {
                 console.error('Erro ao ler/parsear arquivo XML:', error);
             }
         }
-        console.log(data)
         // Agora 'data' contém os objetos JavaScript representando os XML
-        setParsedData(data);
+        console.log(data)
+        const arrFormatada = formatItensXml(data)
+        console.log(arrFormatada)
+        setParsedData(arrFormatada);
+        props.setCtes(arrFormatada)
+        props.setClose(false)
     };
+
+    const formatItensXml = (ctes) => {
+        return ctes.map((cte) => {
+            console.log(cte.protCTe.infProt.chCTe['#text'])
+            return {
+                chave: cte.protCTe.infProt.chCTe['#text'],
+                remetente: {
+                    cnpj: cte.CTe.infCte.rem.CNPJ['#text'],
+                    nome: cte.CTe.infCte.rem.xNome['#text'],
+                    endereco: {
+                        cidade: cte.CTe.infCte.rem.enderReme.xMun['#text'],
+                        uf: cte.CTe.infCte.rem.enderReme.UF['#text']
+                    },
+                },
+                destinatario: {
+                    cnpj: cte.CTe.infCte.dest.CNPJ['#text'],
+                    nome: cte.CTe.infCte.dest.xNome['#text'],
+                    endereco: {
+                        cidade: cte.CTe.infCte.dest.enderDest.xMun['#text'],
+                        uf: cte.CTe.infCte.dest.enderDest.UF['#text']
+                    },
+                }
+            }
+        })
+    }
 
     const readFileAsync = (file) => {
         return new Promise((resolve, reject) => {
