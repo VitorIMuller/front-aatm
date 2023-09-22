@@ -24,17 +24,16 @@ const FileUploader = (props) => {
         }
         // Agora 'data' contém os objetos JavaScript representando os XML
         const arrFormatada = formatItensXml(data)
-        console.log(arrFormatada)
         setParsedData(arrFormatada);
         props.setCtes(arrFormatada)
-        props.setClose(false)
+        props.setClose()
     };
 
     const formatItensXml = (ctes) => {
         return ctes.map((cte) => {
             // PEGAR TOMADOR
             let tomador;
-            if (cte.CTe.infCte.ide.toma3.toma['#text'] === 0) {
+            if (cte.CTe.infCte.ide.toma3.toma['#text'] === '0') {
                 tomador = {
                     cnpj: cte.CTe.infCte.rem.CNPJ['#text'],
                     nome: cte.CTe.infCte.rem.xNome['#text'],
@@ -43,7 +42,7 @@ const FileUploader = (props) => {
                         uf: cte.CTe.infCte.rem.enderReme.UF['#text']
                     },
                 }
-            } else if (cte.CTe.infCte.ide.toma3.toma['#text'] === 1) {
+            } else if (cte.CTe.infCte.ide.toma3.toma['#text'] === '3') {
                 tomador = {
                     cnpj: cte.CTe.infCte.dest.CNPJ['#text'],
                     nome: cte.CTe.infCte.dest.xNome['#text'],
@@ -78,10 +77,10 @@ const FileUploader = (props) => {
                 },
                 tomador: tomador,
                 info_frete: {
-                    valor_carga: cte.CTe.infCte.infCTeNorm.infCarga.VCarga['#text'],
-                    peso_carga: cte.CTe.infCte.infCTeNorm.infCarga.infQ.find((carga) => carga.tpMed['#text'] === 'PESO BRUTO').qCarga['#text'],
-                    unidade_carga: cte.CTe.infCte.infCTeNorm.infCarga.infQ.find((carga) => carga.tpMed['#text'] === 'UNIDADE').qCarga['#text'],
-                    valor_frete_cte: cte.CTe.infCte.VPrest.Comp.VComp['#text']
+                    valor_carga: cte.CTe.infCte.infCTeNorm.infCarga.vCarga['#text'],
+                    peso_carga: parseFloat(cte.CTe.infCte.infCTeNorm.infCarga.infQ.find((carga) => carga.tpMed['#text'] === 'PESO BRUTO').qCarga['#text']).toFixed(2),
+                    unidade_carga: parseInt(cte.CTe.infCte.infCTeNorm.infCarga.infQ.find((carga) => carga.tpMed['#text'] === 'UNIDADE').qCarga['#text']),
+                    valor_frete_cte: cte.CTe.infCte.vPrest.vTPrest['#text']
                 }
             }
         })

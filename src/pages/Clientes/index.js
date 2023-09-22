@@ -77,7 +77,7 @@ export default function Clientes() {
             setLoading(false)
         } else {
             
-            api.criarCliente(novoCliente).then((response) => {
+            api.criarCliente({ ...novoCliente, cpf_cnpj: novoCliente.cpf_cnpj.replace(/\D/g, "")}).then((response) => {
                 setClientes((prevData) => [...prevData, response.data.cliente])
                 Swal.fire({
                     position: 'bottom-end',
@@ -118,7 +118,7 @@ export default function Clientes() {
             })
             setLoading(false)
         } else {
-            api.editarCliente(selectedClient).then((response) => {
+            api.editarCliente({ ...selectedClient, cpf_cnpj: selectedClient.cpf_cnpj.replace(/\D/g, "") }).then((response) => {
                 const newData = [...clientes]
                 const index = clientes.findIndex(m => m._id === response.data.cliente._id)
 
@@ -208,7 +208,9 @@ export default function Clientes() {
                                 <TableRow key={i + 1}>
                                     <TableCell>{i + 1}</TableCell>
                                     <TableCell>{client.nome}</TableCell>
-                                    <TableCell>{client.cpf_cnpj}</TableCell>
+                                    <TableCell>
+                                        {client.cpf_cnpj}
+                                    </TableCell>
                                     <TableCell>
                                         <IconButton color="primary" onClick={() => handleEditClick(client)}>
                                             <EditIcon />

@@ -29,6 +29,11 @@ async function listarClientes() {
     return promise;
 }
 
+async function buscarCliente(id) {
+    const promise = await axios.get(`${BASE_URL}/clientes/id`)
+    return promise;
+}
+
 async function criarCliente(formData) {
     const promise = await axios.post(`${BASE_URL}/clientes`, formData)
     return promise;
@@ -75,6 +80,7 @@ export {
     editarMotorista,
     excluirMotorista,
     listarClientes,
+    buscarCliente,
     criarCliente,
     editarCliente,
     excluirCliente,
