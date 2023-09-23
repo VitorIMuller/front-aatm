@@ -132,7 +132,6 @@ export default function Motorsitas() {
         e.preventDefault()
 
         setLoading(true)
-        console.log(selectedClient)
         api.excluirMotorista(selectedClient._id).then((response) => {
             const newData = [...motoristas]
             const index = motoristas.findIndex(m => m._id === selectedClient._id)

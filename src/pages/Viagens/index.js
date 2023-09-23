@@ -57,10 +57,8 @@ export default function Viagens() {
 
     function createCaminhao(e) {
         e.preventDefault()
-        console.log(novoCaminhao)
 
         setLoading(true)
-        console.log(novoCaminhao)
         api.criarCaminhao(novoCaminhao).then((response) => {
             setCaminhoes((prevData) => [...prevData, response.data.frota])
             Swal.fire({

@@ -103,7 +103,6 @@ export default function Clientes() {
 
     function editCliente(e) {
         e.preventDefault()
-        console.log(selectedClient)
         setLoading(true)
         const requiredFields = ['nome', 'email', 'cpf_cnpj'];
         const emptyFields = requiredFields.filter((field) => !selectedClient[field]);

@@ -71,6 +71,14 @@ async function excluirCaminhao(id) {
 }
 
 
+// VIAGENS 
+
+async function createViagem(formData) {
+    const promise = await axios.post(`${BASE_URL}/viagem`, formData)
+    return promise
+}
+
+
 
 
 
@@ -87,5 +95,6 @@ export {
     listarcaminhoes,
     criarCaminhao,
     editarCaminhao,
-    excluirCaminhao
+    excluirCaminhao,
+    createViagem
 }

@@ -1,10 +1,11 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Modal, Button, TextField, Select, MenuItem, InputLabel, Input } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Modal, Button, TextField, Select, MenuItem, InputLabel, Input, InputAdornment } from "@mui/material";
 import React, { useEffect, useState } from 'react';
 import { Sidebar } from "../../components/sidebar";
 import styled from "styled-components";
 import FileUploader from "../../components/fileReader";
 import { blue } from "@mui/material/colors";
 import * as api from "./../../Services/api"
+import moment from "moment";
 
 export default function NovaViagem() {
     const [openModalCte, setopenModalCte] = useState(false);
@@ -16,10 +17,16 @@ export default function NovaViagem() {
     const [clientes, setClientes] = useState([]);
     const [atualizarFrete, setAtualizarFrete] = useState(false)
 
-    const frota = [{
-        _id: 1,
-        nome: 'QIR-0E80'
-    }]
+    const rota = [
+        {
+            id: 'sc-sp',
+            nome: 'SC-SP'
+        },
+        {
+            id: 'sp-sc',
+            nome: 'SP-SC'
+        }
+    ]
 
     const handleCloseAddCtes = () => {
         setAtualizarFrete(!atualizarFrete)
@@ -55,7 +62,6 @@ export default function NovaViagem() {
             setClientes(response.data)
         })
         const cliente = clientes.find(cliente => cliente.cpf_cnpj === ctes[0]?.tomador.cnpj)
-
         const newArr = ctes.map((cte) => {
             return {
                 ...cte,
@@ -68,12 +74,32 @@ export default function NovaViagem() {
         })
 
         setCtes(newArr)
-        console.log(newArr)
     }
 
     const createViagem = () => {
-        handleCloseModalConfirm()
-        alert('Parabens')
+        const form = {
+            ...viagem,
+            ...{
+                data_inicio: moment().format('YYYY-MM-DD'),
+                ctes,
+                valor_total_sj: ctes.reduce((acc, cur) => {
+                    return acc + cur.info_frete.valor_total
+                }, 0).toFixed(2),
+                valor_total_lp: (ctes.reduce((acc, cur) => {
+                    return acc + cur.info_frete.valor_total
+                }, 0) - viagem.despesas).toFixed(2)
+            }
+        }
+        api.createViagem(form).then((response) => {
+            alert('Viagem criada com sucesso')
+            setCtes([])
+            setViagem([])
+            setLoading(false)
+            handleCloseModalConfirm()
+        }).catch((err) => {
+            alert('Ocorreu um erro')
+            setLoading(false)
+        })
     }
     useEffect(() => {
         getCaminhoes()
@@ -94,12 +120,14 @@ export default function NovaViagem() {
                 <Button align="center" variant="contained" color="primary" style={{ marginBottom: '20px' }} onClick={handleAddCtes}>
                     Adicionar CTES
                 </Button>
+                {ctes?.length > 0 && ( 
+                    <>
                 <div style={{ backgroundColor: blue, width: '100%', display: 'flex', justifyContent: 'space-around' }}>
                     <div style={{width: '40%'}}>
                         <InputLabel id="demo-simple-select-label">Caminhão</InputLabel>
                         <Select
-                            value={setViagem.frota}
-                            onChange={(e) => setViagem({ ...viagem, frota: e.target.value })}
+                            value={setViagem.frota_id}
+                            onChange={(e) => setViagem({ ...viagem, frota_id: e.target.value })}
                             fullWidth
                             required
                             size="small"
@@ -122,10 +150,44 @@ export default function NovaViagem() {
                             size="small"
                             disabled
                             variant="outlined"
-                        />
-                    </div>
-                </div>
-                <div>
+                            />
+                            </div>
+                        </div>
+                        <div>
+                            
+                        <div style={{ backgroundColor: blue, width: '100%', display: 'flex', justifyContent: 'space-around' }}>
+                            <div style={{ width: '40%' }}>
+                                <InputLabel id="demo-simple-select-label">Rota</InputLabel>
+                                <Select
+                                    value={setViagem.rota}
+                                    onChange={(e) => setViagem({ ...viagem, rota: e.target.value })}
+                                    fullWidth
+                                    required
+                                    size="small"
+                                    margin="normal"
+                                >
+                                    {rota.map((f) => (
+                                        <MenuItem key={f.id} value={f.id}>
+                                            {f.nome}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                </div>
+                                <div style={{ width: '40%', marginTop: '8px' }}>
+                                    <InputLabel id="demo-simple-select-label">Valor das despesas</InputLabel>
+                                    <Input
+                                        value={viagem.despesas}
+                                        onChange={(e) => setViagem({ ...viagem, despesas: e.target.value })}
+                                        startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+                                        fullWidth
+                                        label='Despesas'
+                                        margin="normal"
+                                        size="small"
+                                        number
+                                        variant="outlined"
+                                    />
+                                </div>
+                        </div>
                     <TableContainer align="center">
                         <Table sx={{ maxWidth: '100%' }}>
                             <TableHead>
@@ -159,7 +221,9 @@ export default function NovaViagem() {
                             </Button>
                         </div>
                     </TableContainer>
-                </div>
+                        </div>
+                    </>
+                )}
                 <Modal open={openModalCte} onClose={handleCloseAddCtes}>
                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
                         <FileUploader ctes={ctes} setCtes={setCtes} setClose={handleCloseAddCtes} />
