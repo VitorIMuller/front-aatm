@@ -19,16 +19,17 @@ export default function NovaViagem() {
 
     const rota = [
         {
-            id: 'sc-sp',
+            id: 'SC-SP',
             nome: 'SC-SP'
         },
         {
-            id: 'sp-sc',
+            id: 'SP-SC',
             nome: 'SP-SC'
         }
     ]
 
     const handleCloseAddCtes = () => {
+        console.log('opa')
         setAtualizarFrete(!atualizarFrete)
         setopenModalCte(false);
     }
@@ -62,17 +63,24 @@ export default function NovaViagem() {
             setClientes(response.data)
         })
         const cliente = clientes.find(cliente => cliente.cpf_cnpj === ctes[0]?.tomador.cnpj)
-        const newArr = ctes.map((cte) => {
-            return {
-                ...cte,
-                info_frete: {
-                ...cte.info_frete,
-                    valor_romaneio: cliente.valor_frete_sj * cte.info_frete.peso_carga,
-                    valor_total: cliente.valor_frete_sj * cte.info_frete.peso_carga + parseFloat(cte.info_frete.valor_frete_cte)
+        let newArr = []
+        if (ctes?.length > 0) {
+            if (cliente) {
+                newArr = ctes.map((cte) => {
+                    return {
+                        ...cte,
+                        info_frete: {
+                            ...cte.info_frete,
+                            valor_romaneio: cliente.valor_frete_sj * cte.info_frete.peso_carga,
+                            valor_total: cliente.valor_frete_sj * cte.info_frete.peso_carga + parseFloat(cte.info_frete.valor_frete_cte)
+                    }
                 }
-            }
-        })
-
+            })
+        } else {
+            alert('CNPJ do tomador não encontrado, por favor, cadastre o cliente antes de cadastrar a viagem')
+        }
+    }
+            
         setCtes(newArr)
     }
 
@@ -91,7 +99,7 @@ export default function NovaViagem() {
             }
         }
         api.createViagem(form).then((response) => {
-            alert('Viagem criada com sucesso')
+            alert(response.msg)
             setCtes([])
             setViagem([])
             setLoading(false)

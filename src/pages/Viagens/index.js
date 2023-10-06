@@ -6,47 +6,39 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import * as api from "./../../Services/api"
 import Swal from "sweetalert2";
-import FileUploader from "../../components/fileReader";
 import { Link } from "react-router-dom";
+import moment from "moment";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { ptBR } from '@mui/x-date-pickers/locales';
+import 'moment/locale/pt-br'
 
 export default function Viagens() {
 
-    const [caminhoes, setCaminhoes] = useState([]);
-    const [openModalNovoCaminhao, setModalNovoCaminhao] = useState(false);
-    const [openModalEditCaminhao, setOpenModalEditCaminhao] = useState(false);
-    const [openModalDeleteCaminhao, setopenModalDeleteCaminhao] = useState(false);
-    const [selectedCaminhao, setSelectedCaminhao] = useState(null);
-    const [novoCaminhao, setNovoCaminhao] = useState({});
+    const [viagens, setViagens] = useState([]);
+    const [openModalDeleteViagem, setOpenModalDeleteViagem] = useState(false);
+    const [selectedViagem, setSelectedViagem] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [motoristas, setMotoristas] = useState([]);
+    const [filtros, setFiltros] = useState({});
+    const [caminhaoFilter, setCaminhaoFilter] = useState({})
+    const [caminhoes, setCaminhoes] = useState([])
 
-    const handlenovoCaminhao = () => {
-        setModalNovoCaminhao(true);
+    const handleDeleteClick = (viagem) => {
+        setSelectedViagem(viagem);
+        setOpenModalDeleteViagem(true)
     };
 
-    const handleModalNovoCaminhao = () => {
-        setNovoCaminhao({});
-        setModalNovoCaminhao(false);
+    const handleCloseDeleteViagem = () => {
+        setSelectedViagem({});
+        setOpenModalDeleteViagem(false);
     }
 
-    const handleEditCaminhao = (client) => {
-        setSelectedCaminhao(client);
-        setOpenModalEditCaminhao(true);
-    };
-
-    const handleCloseEditarCaminhao = () => {
-        setSelectedCaminhao({});
-        setOpenModalEditCaminhao(false);
-    }
-
-    const handleDeleteClick = (client) => {
-        setSelectedCaminhao(client);
-        setopenModalDeleteCaminhao(true)
-    };
-
-    const handleCloseDeleteCaminhao = () => {
-        setSelectedCaminhao({});
-        setopenModalDeleteCaminhao(false);
+    function getviagens() {
+        api.listarViagens().then((response) => {
+            setViagens(response.data)
+        })
     }
 
     function getCaminhoes() {
@@ -55,77 +47,17 @@ export default function Viagens() {
         })
     }
 
-    function createCaminhao(e) {
+    function excluirViagem(e) {
         e.preventDefault()
 
         setLoading(true)
-        api.criarCaminhao(novoCaminhao).then((response) => {
-            setCaminhoes((prevData) => [...prevData, response.data.frota])
-            Swal.fire({
-                position: 'bottom-end',
-                icon: 'success',
-                title: `${response.data.msg}`,
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }).catch((err) => {
-            Swal.fire({
-                position: 'bottom-end',
-                icon: 'error',
-                title: 'Ops! Ocorreu algum erro!',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        })
-        setLoading(false)
-        setNovoCaminhao({});
-        handleModalNovoCaminhao();
-    }
-
-    function editarCaminhao(e) {
-        e.preventDefault()
-
-        setLoading(true)
-
-        api.editarCaminhao(selectedCaminhao).then((response) => {
-            const newData = [...caminhoes]
-            const index = caminhoes.findIndex(m => m._id === response.data.frota._id)
-
-            newData[index] = response.data.frota;
-
-            setCaminhoes(newData)
-            Swal.fire({
-                position: 'bottom-end',
-                icon: 'success',
-                title: `${response.data.msg}`,
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }).catch((err) => {
-            Swal.fire({
-                position: 'bottom-end',
-                icon: 'error',
-                title: 'Ops! Ocorreu algum erro!',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        })
-        setLoading(false)
-        setSelectedCaminhao({});
-        setOpenModalEditCaminhao(false);
-    }
-
-    function excluirCaminhao(e) {
-        e.preventDefault()
-
-        setLoading(true)
-        api.excluirCaminhao(selectedCaminhao._id).then((response) => {
-            const newData = [...caminhoes]
-            const index = caminhoes.findIndex(m => m._id === selectedCaminhao._id)
+        api.excluirViagem(selectedViagem._id).then((response) => {
+            const newData = [...viagens]
+            const index = viagens.findIndex(m => m._id === selectedViagem._id)
 
             newData.splice(index, 1);
 
-            setCaminhoes(newData)
+            setViagens(newData)
             Swal.fire({
                 position: 'bottom-end',
                 icon: 'success',
@@ -143,19 +75,23 @@ export default function Viagens() {
             })
         })
         setLoading(false)
-        setSelectedCaminhao({});
-        setopenModalDeleteCaminhao(false);
+        setSelectedViagem({});
+        setOpenModalDeleteViagem(false);
     }
 
-    function getMotoristas() {
-        api.listarMotoristas().then((response) => {
-            setMotoristas(response.data)
-        })
+    const formatMoney = (value) => {
+        return value
+            ? Number.parseFloat(value)
+                .toFixed(2)
+                .split('.')
+                .join(',')
+                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            : '0,00'
     }
 
     useEffect(() => {
+        getviagens()
         getCaminhoes()
-        getMotoristas()
     }, [])
 
     return (
@@ -171,26 +107,27 @@ export default function Viagens() {
                     </Redirect>
                 </Button>
                 <TableContainer align="center">
-                    <Table sx={{ maxWidth: 500 }}>
+                    <Table sx={{ maxWidth: '80%' }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Placa</TableCell>
-                                <TableCell>Motorista</TableCell>
+                                <TableCell>Data de inicio</TableCell>
+                                <TableCell>Caminhão</TableCell>
+                                <TableCell>Rota</TableCell>
+                                <TableCell>Tomador</TableCell>
+                                <TableCell>Valor</TableCell>
                                 <TableCell>Opções</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {caminhoes.map((client, i) => (
+                            {viagens.map((viagem, i) => (
                                 <TableRow key={i + 1}>
-                                    <TableCell>{i + 1}</TableCell>
-                                    <TableCell>{client?.placa}</TableCell>
-                                    <TableCell>{client.motorista ? client?.motorista[0].nome : ''}</TableCell>
+                                    <TableCell>{ moment(viagem.data_inicio).format('DD/MM/YYYY') }</TableCell>
+                                    <TableCell>{ viagem.frota[0].placa }</TableCell>
+                                    <TableCell>{ viagem.rota }</TableCell>
+                                    <TableCell>{ viagem.ctes[0].tomador.nome}</TableCell>
+                                    <TableCell>R$ { formatMoney(viagem.valor_total_lp) }</TableCell>
                                     <TableCell>
-                                        <IconButton color="primary" onClick={() => handleEditCaminhao(client)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton color="warning" onClick={() => handleDeleteClick(client)}>
+                                        <IconButton color="warning" onClick={() => handleDeleteClick(viagem)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
@@ -199,61 +136,22 @@ export default function Viagens() {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Modal open={openModalDeleteCaminhao} onClose={handleCloseDeleteCaminhao}>
+                <Modal open={openModalDeleteViagem} onClose={handleCloseDeleteViagem}>
                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
                         <Typography variant="h6" gutterBottom>
                             Confirmar Exclusão
                         </Typography>
-                        {selectedCaminhao && (
+                        {selectedViagem && (
                             <Typography variant="body1">
-                                Tem certeza que deseja excluir o caminhão {selectedCaminhao.placa}?
+                                Tem certeza que deseja excluir a viagem ?
                             </Typography>
                         )}
                         <div style={{ display: "flex", justifyContent: 'end', marginTop: '10px' }}>
-                            <Button align="end" variant="outlined" color="primary" onClick={handleCloseDeleteCaminhao} style={{ marginRight: '10px' }}>
+                            <Button align="end" variant="outlined" color="primary" onClick={handleCloseDeleteViagem} style={{ marginRight: '10px' }}>
                                 Cancelar
                             </Button>
-                            <Button align="end" variant="contained" color="error" onClick={excluirCaminhao}>
+                            <Button align="end" variant="contained" color="error" onClick={excluirViagem}>
                                 {loading ? 'Carregando...' : 'Excluir'}
-                            </Button>
-                        </div>
-                    </div>
-                </Modal>
-                <Modal open={openModalEditCaminhao} onClose={handleCloseEditarCaminhao}>
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
-                        <Typography variant="h6" gutterBottom>
-                            Editar motorista
-                        </Typography>
-                        {selectedCaminhao && (
-                            <div>
-                                <TextField
-                                    label="placa"
-                                    value={selectedCaminhao.placa}
-                                    onChange={(e) => setSelectedCaminhao({ ...setSelectedCaminhao, placa: e.target.value })}
-                                    fullWidth
-                                    margin="normal"
-                                />
-                                <Select
-                                    label="Selecione um motorista"
-                                    value={setSelectedCaminhao.motorista}
-                                    onChange={(e) => setSelectedCaminhao({ ...selectedCaminhao, motorista_id: e.target.value })}
-                                    fullWidth
-                                    style={{ marginBottom: '10px' }}
-                                >
-                                    {motoristas.map((motorista) => (
-                                        <MenuItem key={motorista._id} value={motorista._id}>
-                                            {motorista.nome}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </div>
-                        )}
-                        <div>
-                            <Button variant="outlined" color="primary" onClick={handleCloseEditarCaminhao} style={{ marginRight: '10px' }}>
-                                Cancelar
-                            </Button>
-                            <Button variant="contained" color="success" onClick={editarCaminhao}>
-                                {loading ? 'Carregando...' : 'Salvar'}
                             </Button>
                         </div>
                     </div>

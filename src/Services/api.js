@@ -78,6 +78,16 @@ async function createViagem(formData) {
     return promise
 }
 
+async function listarViagens(formData) {
+    console.log(formData)
+    const promise = await axios.get(`${BASE_URL}/viagem`, {params: formData})
+    return promise
+}
+
+async function excluirViagem(id) {
+    const promise = await axios.delete(`${BASE_URL}/viagem/${id}`)
+    return promise
+}
 
 
 
@@ -96,5 +106,7 @@ export {
     criarCaminhao,
     editarCaminhao,
     excluirCaminhao,
-    createViagem
+    createViagem,
+    listarViagens,
+    excluirViagem
 }
