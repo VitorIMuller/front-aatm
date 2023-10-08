@@ -1,15 +1,14 @@
 import styled from "styled-components";
 import { Sidebar } from "../../components/sidebar";
-import { Button, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Button, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState } from "react";
-// import ptBR from "date-fns/locale/pt-BR"; 
 import { ptBR } from "@mui/x-date-pickers";
 import { useEffect } from "react";
-import { useHistory, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as api from "./../../Services/api"
 import dayjs from "dayjs";
 
