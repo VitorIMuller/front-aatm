@@ -1,18 +1,12 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Modal, Button, TextField, Select, MenuItem, InputLabel } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Modal, Button } from "@mui/material";
 import React, { useEffect, useState } from 'react';
 import { Sidebar } from "../../components/sidebar";
 import styled from "styled-components";
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import * as api from "./../../Services/api"
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { ptBR } from '@mui/x-date-pickers/locales';
 import 'moment/locale/pt-br'
 
 export default function Viagens() {
@@ -21,9 +15,6 @@ export default function Viagens() {
     const [openModalDeleteViagem, setOpenModalDeleteViagem] = useState(false);
     const [selectedViagem, setSelectedViagem] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [filtros, setFiltros] = useState({});
-    const [caminhaoFilter, setCaminhaoFilter] = useState({})
-    const [caminhoes, setCaminhoes] = useState([])
 
     const handleDeleteClick = (viagem) => {
         setSelectedViagem(viagem);
@@ -38,12 +29,6 @@ export default function Viagens() {
     function getviagens() {
         api.listarViagens().then((response) => {
             setViagens(response.data)
-        })
-    }
-
-    function getCaminhoes() {
-        api.listarcaminhoes().then((response) => {
-            setCaminhoes(response.data)
         })
     }
 
@@ -91,7 +76,6 @@ export default function Viagens() {
 
     useEffect(() => {
         getviagens()
-        getCaminhoes()
     }, [])
 
     return (
