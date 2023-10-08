@@ -98,16 +98,26 @@ export default function NovaViagem() {
                 }, 0) - viagem.despesas).toFixed(2)
             }
         }
-        api.createViagem(form).then((response) => {
-            alert(response.msg)
-            setCtes([])
-            setViagem([])
-            setLoading(false)
-            handleCloseModalConfirm()
-        }).catch((err) => {
-            alert('Ocorreu um erro')
-            setLoading(false)
-        })
+        console.log(form)
+        if (!form.frota_id) {
+            alert('Selecione um caminhão')
+        }
+        else if (!form.rota) {
+            alert('Selecione uma rota')
+        } else {
+            
+            api.createViagem(form).then((response) => {
+                console.log(response)
+                    alert(response.data.msg)
+                    setCtes([])
+                    setViagem([])
+                    setLoading(false)
+                    handleCloseModalConfirm()
+                }).catch((err) => {
+                    alert('Ocorreu um erro')
+                    setLoading(false)
+                })
+        }
     }
     useEffect(() => {
         getCaminhoes()

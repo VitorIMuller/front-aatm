@@ -9,8 +9,7 @@ import { useState } from "react";
 // import ptBR from "date-fns/locale/pt-BR"; 
 import { ptBR } from "@mui/x-date-pickers";
 import { useEffect } from "react";
-import moment from "moment";
-
+import { useHistory, useNavigate } from 'react-router-dom';
 import * as api from "./../../Services/api"
 import dayjs from "dayjs";
 
@@ -19,12 +18,21 @@ export default function Home() {
     const [dataInicio, setDataInicio] = useState('')
     const [dataFim, setDataFim] = useState('')
     const [placa, setPlaca] = useState('')
-    const [caminhoes, setCaminhoes] = useState([])
+    const [caminhoes, setCaminhoes] = useState([]);
+    const [clientes, setClientes] = useState([]);
+    const [cliente, setCliente] = useState([]);
+    const navigate = useNavigate()
 
 
     function getCaminhoes() {
         api.listarcaminhoes().then((response) => {
             setCaminhoes(response.data)
+        })
+    }
+
+    function getClientes() {
+        api.listarClientes().then((response) => {
+            setClientes(response.data)
         })
     }
 
@@ -34,12 +42,17 @@ export default function Home() {
             const form = {
                 data_inicio: dayjs(dataInicio).format('YYYY-MM-DD'),
                 data_fim: dayjs(dataFim).format('YYYY-MM-DD'),
-                placa: placa 
+                placa: placa,
+                cliente_id: cliente
             }
             
             api.listarViagens(form).then((res) => {
-                if (res.length === 0) {
+                console.log(res)
+                if (res.data.length === 0) {
                     alert('Não foram encontrados registros')
+                } else {
+                    const myArray = res.data
+                    navigate('/relatorio',  { state: { myArray } } );
                 }
             })
         } else {
@@ -49,6 +62,7 @@ export default function Home() {
 
     useEffect(() => {
         getCaminhoes()
+            getClientes()
     }, [])
     return (
         <>
@@ -57,9 +71,9 @@ export default function Home() {
                 <Typography variant="h5" align="center" gutterBottom style={{ fontWeight: 'bold' }}>
                     Relatório de viagens
                 </Typography>
-                <div style={{display: 'flex'}}>
+                <div style={{display: 'flex', flexDirection: 'column'}}>
 
-                <div style={{display: 'flex', justifyContent: 'center', width: '50%'}}>
+                <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} localeText={brLocale}>
                         <DemoContainer components={['DatePicker']}>
                             <DatePicker label="Data início" format="DD/MM/YYYY" value={dataInicio} onChange={(newValue) => setDataInicio(newValue)} />
@@ -67,7 +81,9 @@ export default function Home() {
                         </DemoContainer>
                     </LocalizationProvider>
                 </div>
-                <div style={{width: '30%'}}>
+                    <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
+                        <div style={{ width: '20%', marginRight: '10px' }}>
+
                     <InputLabel id="demo-simple-select-label">Caminhão</InputLabel>
                     <Select
                         value={placa}
@@ -76,13 +92,31 @@ export default function Home() {
                         required
                         size="small"
                         margin="normal"
-                    >
+                        >
                         {caminhoes.map((f) => (
                             <MenuItem key={f._id} value={f._id}>
                                 {f.placa}
                             </MenuItem>
                         ))}
-                    </Select>
+                        </Select>
+                        </div>
+                        <div style={{ width: '20%' }}>
+                        <InputLabel id="demo-simple-select-label">Tomador</InputLabel>
+                        <Select
+                            value={cliente}
+                            onChange={(e) => setCliente(e.target.value)}
+                            fullWidth
+                            required
+                            size="small"
+                            margin="normal"
+                            >
+                            {clientes.map((f) => (
+                                <MenuItem key={f._id} value={f._id}>
+                                    {f.nome}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                            </div>
                         </div>
                 <div style={{ width: '20%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center'  }}>
                     <Button align="center" variant="contained" color="primary" onClick={gerarRelatorio}>
