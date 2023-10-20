@@ -117,7 +117,7 @@ export default function Home() {
                         </Select>
                             </div>
                         </div>
-                <div style={{ width: '20%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center'  }}>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center'  }}>
                     <Button align="center" variant="contained" color="primary" onClick={gerarRelatorio}>
                         Buscar
                     </Button>
