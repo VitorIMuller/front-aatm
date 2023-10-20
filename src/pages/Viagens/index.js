@@ -129,7 +129,7 @@ export default function Viagens() {
                                                 <TableCell>{viagem.frota[0].placa}</TableCell>
                                                 <TableCell>{viagem.rota}</TableCell>
                                                 <TableCell>{viagem.ctes[0].tomador.nome}</TableCell>
-                                                <TableCell>R$ {formatMoney(viagem.valor_total_lp)}</TableCell>
+                                                <TableCell>R$ {formatMoney(viagem.valor_total_sj)}</TableCell>
                                                 <TableCell>
                                                     <IconButton color="warning" onClick={() => handleDeleteClick(viagem)}>
                                                         <DeleteIcon />

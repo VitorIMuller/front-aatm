@@ -5,7 +5,8 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Typography
+    Typography,
+    Button
 } from "@mui/material";
 import moment from "moment";
 import { useState, useEffect } from "react";
@@ -13,6 +14,7 @@ import styled from "styled-components";
 import * as api from "./../../Services/api"
 import { MagnifyingGlass } from "react-loader-spinner";
 import dayjs from "dayjs";
+import PrintIcon from '@mui/icons-material/Print';
 
 export default function Relatorio() {
 
@@ -81,6 +83,10 @@ export default function Relatorio() {
             alert('ops! ocorreu um erro')
         })
         setLayoutLoading(false)
+    }
+
+    function handlePrint() {
+        window.print();
     }
 
     useEffect(() => {
@@ -156,10 +162,39 @@ export default function Relatorio() {
                         </TableContainer>
                     </>
             }
+            <div>
 
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handlePrint}
+                style={{
+                    position: 'fixed',
+                    bottom: '20px',
+                    right: '20px',
+                }}
+                className="hide-on-print"
+                >
+                    <PrintIcon style={{marginRight: '5px'}} />
+                    Imprimir
+                </Button>
+                <style>
+                    {`
+                        @media print {
+                            .hide-on-print {
+                                display: none;
+                            }
+                            @page {
+                            size: landscape;
+                            }
+                        }
+                    `}
+                </style>
+                </div>
         </ContainerBig>
     )
 }
 
 const ContainerBig = styled.div`
+    width: 100%
 `
