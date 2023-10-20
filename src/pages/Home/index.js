@@ -8,20 +8,17 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState } from "react"; 
 import { ptBR } from "@mui/x-date-pickers";
 import { useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
 import * as api from "./../../Services/api"
 import dayjs from "dayjs";
 
 const brLocale = ptBR.components.MuiLocalizationProvider.defaultProps.localeText;
 export default function Home() {
-    const [dataInicio, setDataInicio] = useState('')
-    const [dataFim, setDataFim] = useState('')
+    const [dataInicio, setDataInicio] = useState(dayjs().startOf('month'))
+    const [dataFim, setDataFim] = useState(dayjs().endOf('month'))
     const [placa, setPlaca] = useState('')
     const [caminhoes, setCaminhoes] = useState([]);
     const [clientes, setClientes] = useState([]);
     const [cliente, setCliente] = useState([]);
-    const navigate = useNavigate()
-
 
     function getCaminhoes() {
         api.listarcaminhoes().then((response) => {
@@ -35,25 +32,29 @@ export default function Home() {
         })
     }
 
+    function limparFiltros() {
+        setCliente('')
+        setPlaca('')
+        setDataInicio(dayjs().startOf('month'))
+        setDataFim(dayjs().endOf('month'))
+    }
+
     function gerarRelatorio(e) {
         e.preventDefault()
         if (dataInicio && dataFim) {
             const form = {
                 data_inicio: dayjs(dataInicio).format('YYYY-MM-DD'),
                 data_fim: dayjs(dataFim).format('YYYY-MM-DD'),
-                placa: placa,
-                cliente_id: cliente
+                placa: placa?.placa,
+                placa_id: placa?._id,
+                cliente: cliente?.nome,
+                cliente_id: cliente?._id
             }
-            
-            api.listarViagens(form).then((res) => {
-                console.log(res)
-                if (res.data.length === 0) {
-                    alert('Não foram encontrados registros')
-                } else {
-                    const myArray = res.data
-                    navigate('/relatorio',  { state: { myArray } } );
-                }
-            })
+            setCliente('')
+            setPlaca('')
+            setDataInicio(dayjs().startOf('month'))
+            setDataFim(dayjs().endOf('month'))
+            window.open(`relatorio?filtros=${JSON.stringify(form)}`)
         } else {
             alert('Selecione data de início e fim')
         }
@@ -74,8 +75,27 @@ export default function Home() {
                     <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
                         <LocalizationProvider dateAdapter={AdapterDayjs} localeText={brLocale}>
                             <DemoContainer components={['DatePicker']}>
-                                <DatePicker label="Data início" format="DD/MM/YYYY" value={dataInicio} onChange={(newValue) => setDataInicio(newValue)} />
-                                <DatePicker label="Data fim" format="DD/MM/YYYY" value={dataFim} onChange={(newValue) => setDataFim(newValue)} />
+                                <DatePicker
+                                    slotProps={{
+                                        textField: ({ position }) => ({
+                                            color: position === 'start' ? 'primary' : 'primary',
+                                        }),
+                                    }} 
+                                    label="Data início"
+                                    format="DD/MM/YYYY"
+                                    value={dataInicio} 
+                                    onChange={(newValue) => setDataInicio(newValue)} color='blue' />
+                                <DatePicker
+                                    slotProps={{
+                                        textField: ({ position }) => ({
+                                            color: position === 'start' ? 'primary' : 'primary',
+                                        }),
+                                    }}
+                                    label="Data fim"
+                                    format="DD/MM/YYYY"
+                                    value={dataFim}
+                                    onChange={(newValue) => setDataFim(newValue)}
+                                />
                             </DemoContainer>
                         </LocalizationProvider>
                     </div>
@@ -91,13 +111,13 @@ export default function Home() {
                                 margin="normal"
                                 >
                                 {caminhoes.map((f) => (
-                                    <MenuItem key={f._id} value={f._id}>
+                                    <MenuItem key={f._id} value={f}>
                                         {f.placa}
                                     </MenuItem>
                                 ))}
                                 </Select>
                                 </div>
-                                <div style={{ width: '25w%' }}>
+                                <div style={{ width: '25%' }}>
                                 <InputLabel id="demo-simple-select-label">Tomador</InputLabel>
                                 <Select
                                     value={cliente}
@@ -108,14 +128,17 @@ export default function Home() {
                                     margin="normal"
                                     >
                                     {clientes.map((f) => (
-                                        <MenuItem key={f._id} value={f._id}>
+                                        <MenuItem key={f._id} value={f}>
                                             {f.nome}
                                         </MenuItem>
                                     ))}
                                 </Select>
                         </div>
                     </div>
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center'  }}>
+                    <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                    <Button align="center" variant="outlined" color="primary" onClick={limparFiltros} style={{marginRight: '10px'}}>
+                            Limpar filtros
+                        </Button>
                     <Button align="center" variant="contained" color="primary" onClick={gerarRelatorio}>
                         Buscar
                     </Button>
