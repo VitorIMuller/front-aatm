@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const BASE_URL = process.env.API_URL
+const BASE_URL = 'https://api-aatm-prod.vercel.app/api'
 
 // MOTORISTAS
 async function listarMotoristas() {

@@ -1,12 +1,27 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Modal, Button, TextField } from "@mui/material";
-import React, { useEffect, useState } from 'react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+    IconButton,
+    Modal,
+    Button,
+    TextField
+} from "@mui/material";
+import { MagnifyingGlass } from 'react-loader-spinner';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { useEffect, useState } from 'react';
 import { Sidebar } from "../../components/sidebar";
 import styled from "styled-components";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import * as api from "./../../Services/api"
+import * as api from "./../../Services/api";
 import Swal from "sweetalert2";
 import CNPJTextField from "../../components/cnpjTextField";
+
+
 export default function Clientes() {
 
     const [clientes, setClientes] = useState([]);
@@ -22,6 +37,7 @@ export default function Clientes() {
         valor_frete_lp: ''
     });
     const [loading, setLoading] = useState(false);
+    const [layoutLoading, setLayoutLoading] = useState(false);
 
     const handleNovoCliente = () => {
         setOpenModalNovoCliente(true);
@@ -53,8 +69,10 @@ export default function Clientes() {
     }
 
     function getClientes() {
+        setLayoutLoading(true)
         api.listarClientes().then((response) => {
-            setClientes(response.data)
+            setClientes(response.data);
+            setLayoutLoading(false);
         })
     }
 
@@ -67,20 +85,14 @@ export default function Clientes() {
         const emptyFields = requiredFields.filter((field) => !novoCliente[field]);
 
         if (emptyFields.length > 0) {
-            Swal.fire({
-                position: 'bottom-end',
-                icon: 'error',
-                title: `Os campos ${emptyFields.join(', ')} são obrigatórios.`,
-                showConfirmButton: false,
-                timer: 1500
-            })
+            alert('Preencha os campos obrigatórios')
             setLoading(false)
         } else {
             
             api.criarCliente({ ...novoCliente, cpf_cnpj: novoCliente.cpf_cnpj.replace(/\D/g, "")}).then((response) => {
                 setClientes((prevData) => [...prevData, response.data.cliente])
                 Swal.fire({
-                    position: 'bottom-end',
+                    position: 'center',
                     icon: 'success',
                     title: `${response.data.msg}`,
                     showConfirmButton: false,
@@ -186,193 +198,211 @@ export default function Clientes() {
         <>
             <Sidebar />
             <ContainerBig maxWidth="md">
-                <Typography variant="h5" align="center" gutterBottom style={{ fontWeight: 'bold' }}>
-                    Listagem de clientes
-                </Typography>
-                <Button align="center" variant="contained" color="primary" onClick={handleNovoCliente} style={{ marginBottom: '20px' }}>
-                    Novo cliente
-                </Button>
-                <TableContainer align="center">
-                    <Table sx={{ maxWidth: 500 }}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Cliente</TableCell>
-                                <TableCell>CNPJ</TableCell>
-                                <TableCell>Opções</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {clientes.map((client, i) => (
-                                <TableRow key={i + 1}>
-                                    <TableCell>{i + 1}</TableCell>
-                                    <TableCell>{client.nome}</TableCell>
-                                    <TableCell>
-                                        {client.cpf_cnpj}
-                                    </TableCell>
-                                    <TableCell>
-                                        <IconButton color="primary" onClick={() => handleEditClick(client)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton color="warning" onClick={() => handleDeleteClick(client)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Modal open={openModalDeleteCliente} onClose={handleModalCloseDeleteMotorista}>
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
-                        <Typography variant="h6" gutterBottom>
-                            Confirmar Exclusão
-                        </Typography>
-                        {selectedClient && (
-                            <Typography variant="body1">
-                                Tem certeza que deseja excluir o cliente {selectedClient.nome}?
+                {
+                    layoutLoading ? 
+                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80vh'}}>
+                            <MagnifyingGlass
+                                visible={true}
+                                height="80"
+                                width="80"
+                                ariaLabel="MagnifyingGlass-loading"
+                                wrapperStyle={{}}
+                                wrapperClass="MagnifyingGlass-wrapper"
+                                glassColor='#c0efff'
+                                color='#1976D2'
+                            />
+                        </div>
+                    :
+                        <>
+                            <Typography variant="h5" align="center" gutterBottom style={{ fontWeight: 'bold' }}>
+                                Listagem de clientes
                             </Typography>
-                        )}
-                        <div style={{ display: "flex", justifyContent: 'end', marginTop: '10px' }}>
-                            <Button align="end" variant="outlined" color="primary" onClick={handleModalCloseDeleteMotorista} style={{ marginRight: '10px' }}>
-                                Cancelar
+                            <Button align="center" variant="contained" color="primary" onClick={handleNovoCliente} style={{ marginBottom: '20px' }}>
+                                Novo cliente
                             </Button>
-                            <Button align="end" variant="contained" color="error" onClick={excluirCliente}>
-                                {loading ? 'Carregando...' : 'Excluir'}
-                            </Button>
-                        </div>
-                    </div>
-                </Modal>
-                <Modal open={openModalEditCliente} onClose={handleModalCloseEditMotorista}>
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
-                        <Typography variant="h6" gutterBottom>
-                            Editar cliente
-                        </Typography>
-                        {selectedClient && (
-                            <div>
-                            <TextField
-                                label="Nome"
-                                value={selectedClient.nome}
-                                onChange={(e) => setSelectedClient({ ...selectedClient, nome: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                required
-                            />
-                        <div style={{display: 'flex', gap: '10px'}}>
-                            <TextField
-                                label="Email"
-                                value={selectedClient.email}
-                                onChange={(e) => setSelectedClient({ ...selectedClient, email: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                required
-                                />
-                            <CNPJTextField
-                                label="CNPJ"
-                                value={selectedClient.cpf_cnpj}
-                                onChange={(e) => setSelectedClient({ ...selectedClient, cpf_cnpj: e.target.value })}
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                margin="normal"
-                            />
-                        </div>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <TextField
-                                label="Valor por Kg Romaneio"
-                                value={selectedClient.valor_frete_sj}
-                                onChange={(e) => setSelectedClient({ ...selectedClient, valor_frete_sj: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                type="number"
-                            />
-                            <TextField
-                                label="Valor por Kg CTE"
-                                value={selectedClient.valor_frete_lp}
-                                onChange={(e) => setSelectedClient({ ...selectedClient, valor_frete_lp: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                type="number"
-                            />
+                            <TableContainer align="center">
+                                <Table sx={{ maxWidth: 500 }}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>ID</TableCell>
+                                            <TableCell>Cliente</TableCell>
+                                            <TableCell>CNPJ</TableCell>
+                                            <TableCell>Opções</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {clientes.map((client, i) => (
+                                            <TableRow key={i + 1}>
+                                                <TableCell>{i + 1}</TableCell>
+                                                <TableCell>{client.nome}</TableCell>
+                                                <TableCell>
+                                                    {client.cpf_cnpj}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <IconButton color="primary" onClick={() => handleEditClick(client)}>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                    <IconButton color="warning" onClick={() => handleDeleteClick(client)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Modal open={openModalDeleteCliente} onClose={handleModalCloseDeleteMotorista}>
+                                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
+                                    <Typography variant="h6" gutterBottom>
+                                        Confirmar Exclusão
+                                    </Typography>
+                                    {selectedClient && (
+                                        <Typography variant="body1">
+                                            Tem certeza que deseja excluir o cliente {selectedClient.nome}?
+                                        </Typography>
+                                    )}
+                                    <div style={{ display: "flex", justifyContent: 'end', marginTop: '10px' }}>
+                                        <Button align="end" variant="outlined" color="primary" onClick={handleModalCloseDeleteMotorista} style={{ marginRight: '10px' }}>
+                                            Cancelar
+                                        </Button>
+                                        <Button align="end" variant="contained" color="error" onClick={excluirCliente}>
+                                            {loading ? 'Carregando...' : 'Excluir'}
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                        <div>
-                            <Button variant="outlined" color="primary" onClick={handleModalCloseEditMotorista} style={{ marginRight: '10px' }}>
-                                Cancelar
-                            </Button>
-                            <Button variant="contained" color="success" onClick={editCliente}>
-                                {loading ? 'Carregando...' : 'Salvar'}
-                            </Button>
-                        </div>
-                    </div>
-                </Modal>
-                <Modal open={openModalNovoCliente} onClose={handleModalCloseNovoCliente}>
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '500px', borderRadius: '4px' }}>
-                        <Typography variant="h6" gutterBottom>
-                            Cadastrar Novo Cliente
-                        </Typography>
-                            <TextField
-                                label="Nome"
-                                value={novoCliente.nome}
-                                onChange={(e) => setNovoCliente({ ...novoCliente, nome: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                required
-                            />
-                        <div style={{display: 'flex', gap: '10px'}}>
-                            <TextField
-                                label="Email"
-                                value={novoCliente.email}
-                                onChange={(e) => setNovoCliente({ ...novoCliente, email: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                required
-                                />
-                            <CNPJTextField
-                                label="CNPJ"
-                                value={novoCliente.cpf_cnpj}
-                                onChange={(e) => setNovoCliente({ ...novoCliente, cpf_cnpj: e.target.value })}
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                margin="normal"
-                            />
-                        </div>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <TextField
-                                label="Valor por Kg Romaneio"
-                                value={novoCliente.valor_frete_sj}
-                                onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_sj: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                type="number"
-                            />
-                            <TextField
-                                label="Valor por Kg CTE"
-                                value={novoCliente.valor_frete_lp}
-                                onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_lp: e.target.value })}
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                type="number"
-                            />
-                        </div>
-                        <Button variant="outlined" color="primary" onClick={handleModalCloseNovoCliente} style={{ marginRight: '10px' }}>
-                            Cancelar
-                        </Button>
-                        <Button variant="contained" color="primary" onClick={createMotorista} loading>
-                            {loading ? 'Carregando...' : 'Cadastrar'}
-                        </Button>
-                    </div>
-                </Modal>
+                            </Modal>
+                            <Modal open={openModalEditCliente} onClose={handleModalCloseEditMotorista}>
+                                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
+                                    <Typography variant="h6" gutterBottom>
+                                        Editar cliente
+                                    </Typography>
+                                    {selectedClient && (
+                                        <div>
+                                            <TextField
+                                                label="Nome"
+                                                value={selectedClient.nome}
+                                                onChange={(e) => setSelectedClient({ ...selectedClient, nome: e.target.value })}
+                                                fullWidth
+                                                margin="normal"
+                                                size="small"
+                                                required
+                                            />
+                                            <div style={{display: 'flex', gap: '10px'}}>
+                                                <TextField
+                                                    label="Email"
+                                                    value={selectedClient.email}
+                                                    onChange={(e) => setSelectedClient({ ...selectedClient, email: e.target.value })}
+                                                    fullWidth
+                                                    margin="normal"
+                                                    size="small"
+                                                    required
+                                                    />
+                                                <CNPJTextField
+                                                    label="CNPJ"
+                                                    value={selectedClient.cpf_cnpj}
+                                                    onChange={(e) => setSelectedClient({ ...selectedClient, cpf_cnpj: e.target.value })}
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    size="small"
+                                                    margin="normal"
+                                                />
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '10px' }}>
+                                                <TextField
+                                                    label="Valor por Kg Romaneio"
+                                                    value={selectedClient.valor_frete_sj}
+                                                    onChange={(e) => setSelectedClient({ ...selectedClient, valor_frete_sj: e.target.value })}
+                                                    fullWidth
+                                                    margin="normal"
+                                                    size="small"
+                                                    type="number"
+                                                />
+                                                <TextField
+                                                    label="Valor por Kg CTE"
+                                                    value={selectedClient.valor_frete_lp}
+                                                    onChange={(e) => setSelectedClient({ ...selectedClient, valor_frete_lp: e.target.value })}
+                                                    fullWidth
+                                                    margin="normal"
+                                                    size="small"
+                                                    type="number"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                        <div>
+                                            <Button variant="outlined" color="primary" onClick={handleModalCloseEditMotorista} style={{ marginRight: '10px' }}>
+                                                Cancelar
+                                            </Button>
+                                            <Button variant="contained" color="success" onClick={editCliente}>
+                                                {loading ? 'Carregando...' : 'Salvar'}
+                                            </Button>
+                                        </div>
+                                </div>
+                            </Modal>
+                            <Modal open={openModalNovoCliente} onClose={handleModalCloseNovoCliente}>
+                                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '500px', borderRadius: '4px' }}>
+                                    <Typography variant="h6" gutterBottom>
+                                        Cadastrar Novo Cliente
+                                    </Typography>
+                                        <TextField
+                                            label="Nome"
+                                            value={novoCliente.nome}
+                                            onChange={(e) => setNovoCliente({ ...novoCliente, nome: e.target.value })}
+                                            fullWidth
+                                            margin="normal"
+                                            size="small"
+                                            required
+                                        />
+                                    <div style={{display: 'flex', gap: '10px'}}>
+                                        <TextField
+                                            label="Email"
+                                            value={novoCliente.email}
+                                            onChange={(e) => setNovoCliente({ ...novoCliente, email: e.target.value })}
+                                            fullWidth
+                                            margin="normal"
+                                            size="small"
+                                            required
+                                            />
+                                        <CNPJTextField
+                                            label="CNPJ"
+                                            value={novoCliente.cpf_cnpj}
+                                            onChange={(e) => setNovoCliente({ ...novoCliente, cpf_cnpj: e.target.value })}
+                                            fullWidth
+                                            variant="outlined"
+                                            size="small"
+                                            margin="normal"
+                                        />
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <TextField
+                                            label="Valor por Kg Romaneio"
+                                            value={novoCliente.valor_frete_sj}
+                                            onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_sj: e.target.value })}
+                                            fullWidth
+                                            margin="normal"
+                                            size="small"
+                                            type="number"
+                                        />
+                                        <TextField
+                                            label="Valor por Kg CTE"
+                                            value={novoCliente.valor_frete_lp}
+                                            onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_lp: e.target.value })}
+                                            fullWidth
+                                            margin="normal"
+                                            size="small"
+                                            type="number"
+                                        />
+                                    </div>
+                                    <Button variant="outlined" color="primary" onClick={handleModalCloseNovoCliente} style={{ marginRight: '10px' }}>
+                                        Cancelar
+                                    </Button>
+                                    <Button variant="contained" color="primary" onClick={createMotorista} loading>
+                                        {loading ? 'Carregando...' : 'Cadastrar'}
+                                    </Button>
+                                </div>
+                            </Modal>
+                        </>
+                }
             </ContainerBig>
         </>
     )

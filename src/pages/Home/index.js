@@ -71,52 +71,50 @@ export default function Home() {
                     Relatório de viagens
                 </Typography>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
-
-                <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} localeText={brLocale}>
-                        <DemoContainer components={['DatePicker']}>
-                            <DatePicker label="Data início" format="DD/MM/YYYY" value={dataInicio} onChange={(newValue) => setDataInicio(newValue)} />
-                            <DatePicker label="Data fim" format="DD/MM/YYYY" value={dataFim} onChange={(newValue) => setDataFim(newValue)} />
-                        </DemoContainer>
-                    </LocalizationProvider>
-                </div>
+                    <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs} localeText={brLocale}>
+                            <DemoContainer components={['DatePicker']}>
+                                <DatePicker label="Data início" format="DD/MM/YYYY" value={dataInicio} onChange={(newValue) => setDataInicio(newValue)} />
+                                <DatePicker label="Data fim" format="DD/MM/YYYY" value={dataFim} onChange={(newValue) => setDataFim(newValue)} />
+                            </DemoContainer>
+                        </LocalizationProvider>
+                    </div>
                     <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
-                        <div style={{ width: '20%', marginRight: '10px' }}>
-
-                    <InputLabel id="demo-simple-select-label">Caminhão</InputLabel>
-                    <Select
-                        value={placa}
-                        onChange={(e) => setPlaca(e.target.value)}
-                        fullWidth
-                        required
-                        size="small"
-                        margin="normal"
-                        >
-                        {caminhoes.map((f) => (
-                            <MenuItem key={f._id} value={f._id}>
-                                {f.placa}
-                            </MenuItem>
-                        ))}
-                        </Select>
+                        <div style={{ width: '25%', marginRight: '10px' }}>
+                            <InputLabel id="demo-simple-select-label">Caminhão</InputLabel>
+                            <Select
+                                value={placa}
+                                onChange={(e) => setPlaca(e.target.value)}
+                                fullWidth
+                                required
+                                size="small"
+                                margin="normal"
+                                >
+                                {caminhoes.map((f) => (
+                                    <MenuItem key={f._id} value={f._id}>
+                                        {f.placa}
+                                    </MenuItem>
+                                ))}
+                                </Select>
+                                </div>
+                                <div style={{ width: '25w%' }}>
+                                <InputLabel id="demo-simple-select-label">Tomador</InputLabel>
+                                <Select
+                                    value={cliente}
+                                    onChange={(e) => setCliente(e.target.value)}
+                                    fullWidth
+                                    required
+                                    size="small"
+                                    margin="normal"
+                                    >
+                                    {clientes.map((f) => (
+                                        <MenuItem key={f._id} value={f._id}>
+                                            {f.nome}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
                         </div>
-                        <div style={{ width: '20%' }}>
-                        <InputLabel id="demo-simple-select-label">Tomador</InputLabel>
-                        <Select
-                            value={cliente}
-                            onChange={(e) => setCliente(e.target.value)}
-                            fullWidth
-                            required
-                            size="small"
-                            margin="normal"
-                            >
-                            {clientes.map((f) => (
-                                <MenuItem key={f._id} value={f._id}>
-                                    {f.nome}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                            </div>
-                        </div>
+                    </div>
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center'  }}>
                     <Button align="center" variant="contained" color="primary" onClick={gerarRelatorio}>
                         Buscar
