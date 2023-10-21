@@ -26,6 +26,9 @@ export default function Relatorio() {
         frota: ''
     })
     const [layoutLoading, setLayoutLoading] = useState(false)
+    const [resumoCte, setResumoCte] = useState(0);
+    const [resumoRomaneio, setResumoRomaneio] = useState(0);
+    const [resumoSj, setResumoSj] = useState(0)
 
     const formatMoney = (value) => {
         return value
@@ -75,7 +78,26 @@ export default function Relatorio() {
                             total_cte: totalCte
                         }
                     }
-            })
+                })
+
+                let initialValue = {
+                    resumoCteCalc: 0,
+                    resumoRomaneioCalc: 0,
+                    resumoTotalCalc: 0
+                }
+                console.log(viagensFormatadas)
+                viagensFormatadas.reduce((acc, cur) => {
+                    acc.resumoCteCalc += parseFloat(cur.total_cte)
+                    acc.resumoRomaneioCalc += parseFloat(cur.total_romaneio)
+                    acc.resumoTotalCalc += parseFloat(cur.valor_total_sj)
+
+                    return acc
+                }, initialValue)
+
+                console.log(initialValue)
+                setResumoCte(initialValue.resumoCteCalc)
+                setResumoRomaneio(initialValue.resumoRomaneioCalc)
+                setResumoSj(initialValue.resumoTotalCalc)
                 
             setViagens(viagensFormatadas)
         })
@@ -130,6 +152,7 @@ export default function Relatorio() {
                         }
                         <TableContainer align="center">
                             {viagens?.length ? 
+                                <>
                                 <Table sx={{ maxWidth: '80%' }}>
                                     <TableHead>
                                         <TableRow>
@@ -145,7 +168,7 @@ export default function Relatorio() {
                                     <TableBody>
                                         {viagens.map((viagem, i) => (
                                             <TableRow key={i + 1}>
-                                                <TableCell>{moment(viagem.data_inicio).format('DD/MM/YYYY')}</TableCell>
+                                                <TableCell>{moment(viagem.data_inicio).add(1, 'day').format('DD/MM/YYYY')}</TableCell>
                                                 <TableCell>{viagem.frota[0].placa}</TableCell>
                                                 <TableCell>{viagem.rota}</TableCell>
                                                 <TableCell>{viagem.ctes[0].tomador.nome}</TableCell>
@@ -156,10 +179,22 @@ export default function Relatorio() {
                                         ))}
                                     </TableBody>
                                 </Table>
+                                </>
                                 :
                                     'Ops! Não foram encontrados registros com os filtros selecionados'
                             }
                         </TableContainer>
+                        <div style={{ width: '90%', display: 'flex', flexDirection: 'column', justifyContent: 'end', alignItems: 'end', alignContent: 'end', marginTop: '10px' }}>
+                            <p>
+                                Valor total CTE: R$ {formatMoney(resumoCte)}
+                            </p>
+                            <p>
+                                Valor total Romaneio: R$ {formatMoney(resumoRomaneio)}
+                            </p>
+                            <p>
+                                Valor total: R$ {formatMoney(resumoSj)}
+                            </p>
+                        </div>
                     </>
             }
             <div>

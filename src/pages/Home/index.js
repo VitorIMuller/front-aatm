@@ -137,8 +137,8 @@ export default function Home() {
                     </div>
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                     <Button align="center" variant="outlined" color="primary" onClick={limparFiltros} style={{marginRight: '10px'}}>
-                            Limpar filtros
-                        </Button>
+                        Limpar filtros
+                    </Button>
                     <Button align="center" variant="contained" color="primary" onClick={gerarRelatorio}>
                         Buscar
                     </Button>
