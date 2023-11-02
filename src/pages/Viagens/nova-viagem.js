@@ -11,7 +11,9 @@ export default function NovaViagem() {
     const [openModalCte, setopenModalCte] = useState(false);
     const [openModalConfirm, setopenModalConfirm] = useState(false);
     const [ctes, setCtes] = useState([]);
-    const [viagem, setViagem] = useState([]);
+    const [viagem, setViagem] = useState({
+        rota: 'SC-SP'
+    });
     const [caminhoes, setCaminhoes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [clientes, setClientes] = useState([]);
@@ -71,8 +73,8 @@ export default function NovaViagem() {
                         ...cte,
                         info_frete: {
                             ...cte.info_frete,
-                            valor_romaneio: cliente.valor_frete_sj * cte.info_frete.peso_carga,
-                            valor_total: cliente.valor_frete_sj * cte.info_frete.peso_carga + parseFloat(cte.info_frete.valor_frete_cte)
+                            valor_romaneio: viagem.rota === 'SC-SP' ? cliente.valor_frete_subida * cte.info_frete.peso_carga : cliente.valor_frete_descida * cte.info_frete.peso_carga,
+                            valor_total: viagem.rota === 'SC-SP' ? cliente.valor_frete_subida * cte.info_frete.peso_carga + parseFloat(cte.info_frete.valor_frete_cte) : cliente.valor_frete_descida * cte.info_frete.peso_carga + parseFloat(cte.info_frete.valor_frete_cte)
                     }
                 }
             })
@@ -125,7 +127,7 @@ export default function NovaViagem() {
 
     useEffect(() => {
             calcularFrete()
-    }, [atualizarFrete])
+    }, [atualizarFrete, viagem.rota])
 
 
     return (
@@ -177,7 +179,7 @@ export default function NovaViagem() {
                             <div style={{ width: '40%' }}>
                                 <InputLabel id="demo-simple-select-label">Rota</InputLabel>
                                 <Select
-                                    value={setViagem.rota}
+                                    value={viagem.rota}
                                     onChange={(e) => setViagem({ ...viagem, rota: e.target.value })}
                                     fullWidth
                                     required

@@ -33,8 +33,8 @@ export default function Clientes() {
         nome: '',
         email: '',
         cpf_cnpj: '',
-        valor_frete_sj: '',
-        valor_frete_lp: ''
+        valor_frete_subida: '',
+        valor_frete_descida: ''
     });
     const [loading, setLoading] = useState(false);
     const [layoutLoading, setLayoutLoading] = useState(false);
@@ -197,7 +197,7 @@ export default function Clientes() {
     return (
         <>
             <Sidebar />
-            <ContainerBig maxWidth="md">
+            <ContainerBig maxWidth="80%">
                 {
                     layoutLoading ? 
                         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80vh'}}>
@@ -309,18 +309,18 @@ export default function Clientes() {
                                             </div>
                                             <div style={{ display: 'flex', gap: '10px' }}>
                                                 <TextField
-                                                    label="Valor por Kg Romaneio"
-                                                    value={selectedClient.valor_frete_sj}
-                                                    onChange={(e) => setSelectedClient({ ...selectedClient, valor_frete_sj: e.target.value })}
+                                                    label="Valor frete de romaneio - subida"
+                                                    value={selectedClient.valor_frete_subida}
+                                                    onChange={(e) => setSelectedClient({ ...selectedClient, valor_frete_subida: e.target.value })}
                                                     fullWidth
                                                     margin="normal"
                                                     size="small"
                                                     type="number"
                                                 />
                                                 <TextField
-                                                    label="Valor por Kg CTE"
-                                                    value={selectedClient.valor_frete_lp}
-                                                    onChange={(e) => setSelectedClient({ ...selectedClient, valor_frete_lp: e.target.value })}
+                                                    label="Valor frete de romaneio - descida"
+                                                    value={selectedClient.valor_frete_descida}
+                                                    onChange={(e) => setSelectedClient({ ...selectedClient, valor_frete_descida: e.target.value })}
                                                     fullWidth
                                                     margin="normal"
                                                     size="small"
@@ -374,24 +374,24 @@ export default function Clientes() {
                                         />
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px' }}>
-                                        <TextField
-                                            label="Valor por Kg Romaneio"
-                                            value={novoCliente.valor_frete_sj}
-                                            onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_sj: e.target.value })}
-                                            fullWidth
-                                            margin="normal"
-                                            size="small"
-                                            type="number"
-                                        />
-                                        <TextField
-                                            label="Valor por Kg CTE"
-                                            value={novoCliente.valor_frete_lp}
-                                            onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_lp: e.target.value })}
-                                            fullWidth
-                                            margin="normal"
-                                            size="small"
-                                            type="number"
-                                        />
+                                                <TextField
+                                                    label="Valor frete de romaneio - subida"
+                                                    value={novoCliente.valor_frete_subida}
+                                                    onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_subida: e.target.value })}
+                                                    fullWidth
+                                                    margin="normal"
+                                                    size="small"
+                                                    type="number"
+                                                />
+                                                <TextField
+                                                    label="Valor frete de romaneio - descida"
+                                                    value={novoCliente.valor_frete_descida}
+                                                    onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_descida: e.target.value })}
+                                                    fullWidth
+                                                    margin="normal"
+                                                    size="small"
+                                                    type="number"
+                                                />
                                     </div>
                                     <Button variant="outlined" color="primary" onClick={handleModalCloseNovoCliente} style={{ marginRight: '10px' }}>
                                         Cancelar
