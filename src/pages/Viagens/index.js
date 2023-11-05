@@ -90,6 +90,7 @@ export default function Viagens() {
         setLoading(false)
         setSelectedViagem({});
         setOpenModalDeleteViagem(false);
+        window.location.reload()
     }
 
     const formatMoney = (value) => {
