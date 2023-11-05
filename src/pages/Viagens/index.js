@@ -45,6 +45,7 @@ export default function Viagens() {
     }
 
     const handleCloseDetailsViagem = () => {
+        setSelectedViagem({});
         setOpenModalDetailsViagem(false);
     }
 
