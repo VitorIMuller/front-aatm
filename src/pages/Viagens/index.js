@@ -26,6 +26,7 @@ export default function Viagens() {
     const [openModalDeleteViagem, setOpenModalDeleteViagem] = useState(false);
     const [openModalDetailsViagem, setOpenModalDetailsViagem] = useState(false);
     const [selectedViagem, setSelectedViagem] = useState(null);
+    const [detailsViagem, setDetailsViagem] = useState();
     const [loading, setLoading] = useState(false);
     const [layoutLoading, setLayoutLoading] = useState(false);
 
@@ -35,7 +36,7 @@ export default function Viagens() {
     };
 
     const handleDetaisClick = (viagem) => {
-        setSelectedViagem(viagem);
+        setDetailsViagem(viagem);
         setOpenModalDetailsViagem(true)
     };
 
@@ -241,12 +242,12 @@ export default function Viagens() {
                                     <Typography variant="h6" gutterBottom>
                                         Detalhes da viagem
                                     </Typography>
-                                    {selectedViagem ? 
+                                    {detailsViagem ? 
                                         <>
                                         <div style={{  width: '100%', marginTop: '8px' }}>
                                             <InputLabel id="demo-simple-select-label">Rota</InputLabel>
                                             <Input
-                                                value={selectedViagem?.rota}
+                                                value={detailsViagem?.rota}
                                                 fullWidth
                                                 label='Rota'
                                                 margin="normal"
@@ -257,7 +258,7 @@ export default function Viagens() {
                                             <div style={{ width: '100%', marginTop: '8px' }}>
                                                 <InputLabel id="demo-simple-select-label">Caminhão</InputLabel>
                                             <Input
-                                                value={selectedViagem ? selectedViagem?.frota[0]?.placa : ''}
+                                                value={detailsViagem ? detailsViagem?.frota[0]?.placa : ''}
                                                 fullWidth
                                                 label='Caminhão'
                                                 margin="normal"
@@ -268,7 +269,7 @@ export default function Viagens() {
                                             <div style={{  width: '100%', marginTop: '8px' }}>
                                                 <InputLabel id="demo-simple-select-label">Tomador</InputLabel>
                                                 <Input
-                                                    value={selectedViagem?.ctes[0]?.tomador.nome}
+                                                    value={detailsViagem?.ctes[0]?.tomador.nome}
                                                     fullWidth
                                                     label='Tomador'
                                                     margin="normal"
@@ -279,7 +280,7 @@ export default function Viagens() {
                                             <div style={{  width: '100%', marginTop: '8px' }}>
                                                 <InputLabel id="demo-simple-select-label">Remetente</InputLabel>
                                                 <Input
-                                                    value={selectedViagem?.ctes[0]?.remetente.nome}
+                                                    value={detailsViagem?.ctes[0]?.remetente.nome}
                                                     fullWidth
                                                     label='Remetente'
                                                     margin="normal"
@@ -290,7 +291,7 @@ export default function Viagens() {
                                             <div style={{  width: '100%', marginTop: '8px' }}>
                                                 <InputLabel id="demo-simple-select-label">Destinatário</InputLabel>
                                                 <Input
-                                                    value={selectedViagem?.ctes[0]?.destinatario.nome}
+                                                    value={detailsViagem?.ctes[0]?.destinatario.nome}
                                                     fullWidth
                                                     label='Destinatário'
                                                     margin="normal"
@@ -302,7 +303,7 @@ export default function Viagens() {
                                                 <InputLabel id="demo-simple-select-label">Ctes</InputLabel>
                                                 <Input
                                                     value={
-                                                        pegarCtes(selectedViagem)
+                                                        pegarCtes(detailsViagem)
                                                     }
                                                     fullWidth
                                                     label='Ctes'
@@ -314,7 +315,7 @@ export default function Viagens() {
                                             <div style={{ width: '100%', marginTop: '8px' }}>
                                                 <InputLabel id="demo-simple-select-label">Valor Total</InputLabel>
                                                 <Input
-                                                    value={`R$ ${formatMoney(selectedViagem.valor_total_sj)}`}
+                                                    value={`R$ ${formatMoney(detailsViagem.valor_total_sj)}`}
                                                     fullWidth
                                                     label='Valor total'
                                                     margin="normal"
