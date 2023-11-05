@@ -87,7 +87,7 @@ export default function Viagens() {
                 timer: 1500
             })
         })
-        window.location.reload()
+        
         setLoading(false)
         setSelectedViagem({});
         setOpenModalDeleteViagem(false);
