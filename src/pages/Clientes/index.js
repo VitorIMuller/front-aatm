@@ -137,7 +137,6 @@ export default function Clientes() {
 
                 setClientes(newData)
                 Swal.fire({
-                    position: 'bottom-end',
                     icon: 'success',
                     title: `${response.data.msg}`,
                     showConfirmButton: false,
@@ -170,7 +169,7 @@ export default function Clientes() {
 
             setClientes(newData)
             Swal.fire({
-                position: 'bottom-end',
+                position: 'top-end',
                 icon: 'success',
                 title: `${response.data.msg}`,
                 showConfirmButton: false,

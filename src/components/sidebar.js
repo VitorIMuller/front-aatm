@@ -16,6 +16,7 @@
     import PeopleIcon from '@mui/icons-material/People';
     import LocalShippingIcon from '@mui/icons-material/LocalShipping';
     import MovingIcon from '@mui/icons-material/Moving';
+    import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
     import DashboardIcon from '@mui/icons-material/Dashboard';
     import { Link } from 'react-router-dom';
     import BusinessIcon from '@mui/icons-material/Business';
@@ -108,9 +109,14 @@ import { Tooltip } from '@mui/material';
                 link: '/'
             },
             {
-                text: 'Frota',
-                icon: <LocalShippingIcon />,
-                link: '/frota'
+                text: 'Cobranças',
+                icon: <AttachMoneyIcon />,
+                link: '/cobrancas'
+            },
+            {
+                text: 'Viagens',
+                icon: <MovingIcon />,
+                link: '/viagens'
             },
             {
                 text: 'Clientes',
@@ -118,9 +124,9 @@ import { Tooltip } from '@mui/material';
                 link: '/clientes'
             },
             {
-                text: 'Viagens',
-                icon: <MovingIcon />,
-                link: '/viagens'
+                text: 'Frota',
+                icon: <LocalShippingIcon />,
+                link: '/frota'
             },
             {
                 text: 'Motoristas',

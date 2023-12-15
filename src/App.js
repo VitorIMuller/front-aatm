@@ -8,6 +8,7 @@ import Viagens from "./pages/Viagens"
 import Motoristas from "./pages/Motoristas"
 import NovaViagem from "./pages/Viagens/nova-viagem"
 import Relatorio from "./pages/Relatorio"
+import Cobrancas from "./pages/Cobrancas/listagem.js"
 
 export default function App() {
     return (
@@ -20,6 +21,7 @@ export default function App() {
                 <Route path="/nova-viagem" element={<NovaViagem />} />
                 <Route path="/motoristas" element={<Motoristas />} />
                 <Route path="/relatorio" element={<Relatorio />} />
+                <Route path="/cobrancas" element={<Cobrancas />} />                
             </Routes>
         </Router>
     )

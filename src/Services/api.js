@@ -1,7 +1,7 @@
 import axios from "axios"
 
-const BASE_URL = 'https://api-aatm-prod.vercel.app/api'
-// const BASE_URL = 'http://localhost:4000/api'
+// const BASE_URL = 'https://api-aatm-prod.vercel.app/api'
+const BASE_URL = 'http://localhost:4000/api'
 
 // MOTORISTAS
 async function listarMotoristas() {
@@ -90,6 +90,24 @@ async function excluirViagem(id) {
     return promise
 }
 
+// COBRANCAS 
+
+async function createCobranca(formData) {
+    const promise = await axios.post(`${BASE_URL}/cobranca`, formData)
+    return promise
+}
+
+async function listarCobrancas(formData) {
+    console.log(formData)
+    const promise = await axios.get(`${BASE_URL}/cobrancas`, {params: formData})
+    return promise
+}
+
+async function excluirCobranca(id) {
+    const promise = await axios.delete(`${BASE_URL}/cobranca/${id}`)
+    return promise
+}
+
 
 
 
@@ -109,5 +127,8 @@ export {
     excluirCaminhao,
     createViagem,
     listarViagens,
-    excluirViagem
+    excluirViagem,
+    createCobranca,
+    listarCobrancas,
+    excluirCobranca
 }
