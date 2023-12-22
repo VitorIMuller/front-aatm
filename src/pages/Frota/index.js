@@ -12,7 +12,8 @@ import {
     TextField,
     Select,
     MenuItem,
-    InputLabel
+    InputLabel,
+    Card
 } from "@mui/material";
 import React, { useEffect, useState } from 'react';
 import { Sidebar } from "../../components/sidebar";
@@ -64,7 +65,7 @@ export default function Frota() {
         setopenModalDeleteCaminhao(false);
     }
 
-    
+
     function createCaminhao(e) {
         e.preventDefault()
 
@@ -156,7 +157,7 @@ export default function Frota() {
         setSelectedCaminhao({});
         setopenModalDeleteCaminhao(false);
     }
-    
+
     function getCaminhoes() {
         setLayoutLoading(true)
         api.listarcaminhoes().then((response) => {
@@ -202,35 +203,37 @@ export default function Frota() {
                             <Button align="center" variant="contained" color="primary" onClick={handlenovoCaminhao} style={{ marginBottom: '20px' }}>
                                 Novo caminhão
                             </Button>
-                            <TableContainer align="center">
-                                <Table sx={{ maxWidth: 500 }}>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>ID</TableCell>
-                                            <TableCell>Placa</TableCell>
-                                            <TableCell>Motorista</TableCell>
-                                            <TableCell>Opções</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {caminhoes.map((client, i) => (
-                                            <TableRow key={i + 1}>
-                                                <TableCell>{i + 1}</TableCell>
-                                                <TableCell>{client?.placa}</TableCell>
-                                                <TableCell>{client.motorista ? client?.motorista[0].nome : ''}</TableCell>
-                                                <TableCell>
-                                                    <IconButton color="primary" onClick={() => handleEditCaminhao(client)}>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                    <IconButton color="warning" onClick={() => handleDeleteClick(client)}>
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </TableCell>
+                            <Card align="center">
+                                <TableContainer align="center">
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell style={{ width: '10%' }}>ID</TableCell>
+                                                <TableCell style={{ width: '50%' }}>Placa</TableCell>
+                                                <TableCell style={{ width: '30%' }}>Motorista</TableCell>
+                                                <TableCell style={{ width: '10%' }}>Opções</TableCell>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                                        </TableHead>
+                                        <TableBody>
+                                            {caminhoes.map((client, i) => (
+                                                <TableRow key={i + 1}>
+                                                    <TableCell>{i + 1}</TableCell>
+                                                    <TableCell>{client?.placa}</TableCell>
+                                                    <TableCell>{client.motorista ? client?.motorista[0].nome : ''}</TableCell>
+                                                    <TableCell>
+                                                        <IconButton color="primary" onClick={() => handleEditCaminhao(client)}>
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                        <IconButton color="warning" onClick={() => handleDeleteClick(client)}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Card>
                             <Modal open={openModalDeleteCaminhao} onClose={handleCloseDeleteCaminhao}>
                                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
                                     <Typography variant="h6" gutterBottom>
@@ -310,14 +313,14 @@ export default function Frota() {
                                         onChange={(e) => setNovoCaminhao({ ...novoCaminhao, motorista_id: e.target.value })}
                                         fullWidth
                                         required
-                                        style={{marginBottom: '10px'}}
-                                        >
-                                            {motoristas.map((motorista) => (
-                                                <MenuItem key={motorista._id} value={motorista._id}>
-                                                    {motorista.nome}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
+                                        style={{ marginBottom: '10px' }}
+                                    >
+                                        {motoristas.map((motorista) => (
+                                            <MenuItem key={motorista._id} value={motorista._id}>
+                                                {motorista.nome}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
                                     <Button variant="outlined" color="primary" onClick={handleModalNovoCaminhao} style={{ marginRight: '10px' }}>
                                         Cancelar
                                     </Button>

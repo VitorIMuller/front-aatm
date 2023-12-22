@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Modal, Button, TextField } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Modal, Button, TextField, Card } from "@mui/material";
 import React, { useEffect, useState } from 'react';
 import { Sidebar } from "../../components/sidebar";
 import styled from "styled-components";
@@ -18,7 +18,7 @@ export default function Motorsitas() {
     const [novoMotorista, setNovoMotorista] = useState({});
     const [loading, setLoading] = useState(false);
     const [layoutLoading, setLayoutLoading] = useState(false);
-    
+
     const handleNovoMotorista = () => {
         setOpenModalNovoMotorista(true);
     };
@@ -27,7 +27,7 @@ export default function Motorsitas() {
         setNovoMotorista({});
         setOpenModalNovoMotorista(false);
     }
-    
+
     const handleEditClick = (client) => {
         setSelectedClient(client);
         setOpenModalEditMotorista(true);
@@ -171,7 +171,7 @@ export default function Motorsitas() {
     return (
         <>
             <Sidebar />
-            <ContainerBig maxWidth="md">
+            <ContainerBig align="center" maxWidth="md">
                 {
                     layoutLoading ?
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80vh' }}>
@@ -194,35 +194,37 @@ export default function Motorsitas() {
                             <Button align="center" variant="contained" color="primary" onClick={handleNovoMotorista} style={{ marginBottom: '20px' }}>
                                 Novo motorista
                             </Button>
-                            <TableContainer align="center">
-                                <Table sx={{ maxWidth: 500 }}>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>ID</TableCell>
-                                            <TableCell>Motorista</TableCell>
-                                            <TableCell>Situação</TableCell>
-                                            <TableCell>Opções</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {motoristas.map((client, i) => (
-                                            <TableRow key={i + 1}>
-                                                <TableCell>{i + 1}</TableCell>
-                                                <TableCell>{client.nome}</TableCell>
-                                                <TableCell>{client.status === true ? 'Ativo' : 'Inativo' }</TableCell>
-                                                <TableCell>
-                                                    <IconButton color="primary" onClick={() => handleEditClick(client)}>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                    <IconButton color="warning" onClick={() => handleDeleteClick(client)}>
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </TableCell>
+                            <Card align="center">
+                                <TableContainer align="center">
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell style={{ width: '10%' }}>ID</TableCell>
+                                                <TableCell style={{ width: '50%' }}>Motorista</TableCell>
+                                                <TableCell style={{ width: '30%' }}>Situação</TableCell>
+                                                <TableCell style={{ width: '10%' }}>Opções</TableCell>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                                        </TableHead>
+                                        <TableBody>
+                                            {motoristas.map((client, i) => (
+                                                <TableRow key={i + 1}>
+                                                    <TableCell>{i + 1}</TableCell>
+                                                    <TableCell>{client.nome}</TableCell>
+                                                    <TableCell>{client.status === true ? 'Ativo' : 'Inativo'}</TableCell>
+                                                    <TableCell>
+                                                        <IconButton color="primary" onClick={() => handleEditClick(client)}>
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                        <IconButton color="warning" onClick={() => handleDeleteClick(client)}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Card>
                             <Modal open={openModalDeleteMotorista} onClose={handleModalCloseDeleteMotorista}>
                                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
                                     <Typography variant="h6" gutterBottom>
@@ -253,7 +255,7 @@ export default function Motorsitas() {
                                             <TextField
                                                 label="Nome"
                                                 value={selectedClient.nome}
-                                                onChange={(e) => setSelectedClient({...selectedClient, nome: e.target.value})}
+                                                onChange={(e) => setSelectedClient({ ...selectedClient, nome: e.target.value })}
                                                 fullWidth
                                                 margin="normal"
                                             />

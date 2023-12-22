@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Modal, Button, Input, InputLabel } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Modal, Button, Input, InputLabel, Card } from "@mui/material";
 import React, { useEffect, useState } from 'react';
 import { Sidebar } from "../../components/sidebar";
 import styled from "styled-components";
@@ -87,7 +87,7 @@ export default function Viagens() {
                 timer: 1500
             })
         })
-        
+
         setLoading(false)
         setSelectedViagem({});
         setOpenModalDeleteViagem(false);
@@ -103,7 +103,7 @@ export default function Viagens() {
             : '0,00'
     }
 
-    function limparFiltros(){
+    function limparFiltros() {
         setDataInicio(dayjs().startOf('month'))
         setDataFim(dayjs().endOf('month'))
     }
@@ -180,43 +180,45 @@ export default function Viagens() {
                                     Nova viagem
                                 </Redirect>
                             </Button>
-                            <TableContainer align="center">
-                                {viagens?.length ?
-                                    <Table sx={{ maxWidth: '80%' }}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Data de inicio</TableCell>
-                                                <TableCell>Caminhão</TableCell>
-                                                <TableCell>Rota</TableCell>
-                                                <TableCell>Tomador</TableCell>
-                                                <TableCell>Valor</TableCell>
-                                                <TableCell>Opções</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {viagens.map((viagem, i) => (
-                                                <TableRow key={i + 1}>
-                                                    <TableCell>{moment(viagem.data_inicio).add(1, 'day').format('DD/MM/YYYY')}</TableCell>
-                                                    <TableCell>{viagem.frota[0]?.placa}</TableCell>
-                                                    <TableCell>{viagem.rota}</TableCell>
-                                                    <TableCell>{viagem.ctes[0]?.tomador.nome}</TableCell>
-                                                    <TableCell>R$ {formatMoney(viagem.valor_total_sj)}</TableCell>
-                                                    <TableCell>
-                                                        <IconButton color="primary" onClick={() => handleDetaisClick(viagem)}>
-                                                            <OpenInBrowser />
-                                                        </IconButton>
-                                                        <IconButton color="warning" onClick={() => handleDeleteClick(viagem)}>
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </TableCell>
+                            <Card align="center">
+                                <TableContainer align="center">
+                                    {viagens?.length ?
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Data de inicio</TableCell>
+                                                    <TableCell>Caminhão</TableCell>
+                                                    <TableCell>Rota</TableCell>
+                                                    <TableCell>Tomador</TableCell>
+                                                    <TableCell>Valor</TableCell>
+                                                    <TableCell>Opções</TableCell>
                                                 </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                    :
-                                        'Ops! Não foram encontrados registros com os filtros selecionados'
-                                }
-                            </TableContainer>
+                                            </TableHead>
+                                            <TableBody>
+                                                {viagens.map((viagem, i) => (
+                                                    <TableRow key={i + 1}>
+                                                        <TableCell>{moment(viagem.data_inicio).add(1, 'day').format('DD/MM/YYYY')}</TableCell>
+                                                        <TableCell>{viagem.frota[0]?.placa}</TableCell>
+                                                        <TableCell>{viagem.rota}</TableCell>
+                                                        <TableCell>{viagem.ctes[0]?.tomador.nome}</TableCell>
+                                                        <TableCell>R$ {formatMoney(viagem.valor_total_sj)}</TableCell>
+                                                        <TableCell>
+                                                            <IconButton color="primary" onClick={() => handleDetaisClick(viagem)}>
+                                                                <OpenInBrowser />
+                                                            </IconButton>
+                                                            <IconButton color="warning" onClick={() => handleDeleteClick(viagem)}>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                        :
+                                        <div style={{ padding: '10px', fontSize: '18px' }}>Ops! Não foram encontrados registros com os filtros selecionados</div>
+                                    }
+                                </TableContainer>
+                            </Card>
                             <Modal open={openModalDeleteViagem} onClose={handleCloseDeleteViagem}>
                                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
                                     <Typography variant="h6" gutterBottom>
@@ -242,31 +244,31 @@ export default function Viagens() {
                                     <Typography variant="h6" gutterBottom>
                                         Detalhes da viagem
                                     </Typography>
-                                    {detailsViagem ? 
+                                    {detailsViagem ?
                                         <>
-                                        <div style={{  width: '100%', marginTop: '8px' }}>
-                                            <InputLabel id="demo-simple-select-label">Rota</InputLabel>
-                                            <Input
-                                                value={detailsViagem?.rota}
-                                                fullWidth
-                                                label='Rota'
-                                                margin="normal"
-                                                size="small"
-                                                disabled
-                                            />
-                                        </div>
                                             <div style={{ width: '100%', marginTop: '8px' }}>
-                                                <InputLabel id="demo-simple-select-label">Caminhão</InputLabel>
-                                            <Input
-                                                value={detailsViagem ? detailsViagem?.frota[0]?.placa : ''}
-                                                fullWidth
-                                                label='Caminhão'
-                                                margin="normal"
-                                                size="small"
-                                                disabled
+                                                <InputLabel id="demo-simple-select-label">Rota</InputLabel>
+                                                <Input
+                                                    value={detailsViagem?.rota}
+                                                    fullWidth
+                                                    label='Rota'
+                                                    margin="normal"
+                                                    size="small"
+                                                    disabled
                                                 />
                                             </div>
-                                            <div style={{  width: '100%', marginTop: '8px' }}>
+                                            <div style={{ width: '100%', marginTop: '8px' }}>
+                                                <InputLabel id="demo-simple-select-label">Caminhão</InputLabel>
+                                                <Input
+                                                    value={detailsViagem ? detailsViagem?.frota[0]?.placa : ''}
+                                                    fullWidth
+                                                    label='Caminhão'
+                                                    margin="normal"
+                                                    size="small"
+                                                    disabled
+                                                />
+                                            </div>
+                                            <div style={{ width: '100%', marginTop: '8px' }}>
                                                 <InputLabel id="demo-simple-select-label">Tomador</InputLabel>
                                                 <Input
                                                     value={detailsViagem?.ctes[0]?.tomador.nome}
@@ -277,7 +279,7 @@ export default function Viagens() {
                                                     disabled
                                                 />
                                             </div>
-                                            <div style={{  width: '100%', marginTop: '8px' }}>
+                                            <div style={{ width: '100%', marginTop: '8px' }}>
                                                 <InputLabel id="demo-simple-select-label">Remetente</InputLabel>
                                                 <Input
                                                     value={detailsViagem?.ctes[0]?.remetente.nome}
@@ -288,7 +290,7 @@ export default function Viagens() {
                                                     disabled
                                                 />
                                             </div>
-                                            <div style={{  width: '100%', marginTop: '8px' }}>
+                                            <div style={{ width: '100%', marginTop: '8px' }}>
                                                 <InputLabel id="demo-simple-select-label">Destinatário</InputLabel>
                                                 <Input
                                                     value={detailsViagem?.ctes[0]?.destinatario.nome}
@@ -299,7 +301,7 @@ export default function Viagens() {
                                                     disabled
                                                 />
                                             </div>
-                                            <div style={{  width: '100%', marginTop: '8px' }}>
+                                            <div style={{ width: '100%', marginTop: '8px' }}>
                                                 <InputLabel id="demo-simple-select-label">Ctes</InputLabel>
                                                 <Input
                                                     value={
@@ -323,9 +325,9 @@ export default function Viagens() {
                                                     disabled
                                                 />
                                             </div>
-                                                </>
-                                    : 
-                                    'Não foi selecionado viagem'
+                                        </>
+                                        :
+                                        'Não foi selecionado viagem'
                                     }
                                     <div style={{ display: "flex", justifyContent: 'end', marginTop: '10px' }}>
                                         <Button align="end" variant="outlined" color="primary" onClick={handleCloseDetailsViagem}>

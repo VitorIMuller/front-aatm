@@ -9,7 +9,8 @@ import {
     IconButton,
     Modal,
     Button,
-    TextField
+    TextField,
+    Card
 } from "@mui/material";
 import { MagnifyingGlass } from 'react-loader-spinner';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -88,8 +89,8 @@ export default function Clientes() {
             alert('Preencha os campos obrigatórios')
             setLoading(false)
         } else {
-            
-            api.criarCliente({ ...novoCliente, cpf_cnpj: novoCliente.cpf_cnpj.replace(/\D/g, "")}).then((response) => {
+
+            api.criarCliente({ ...novoCliente, cpf_cnpj: novoCliente.cpf_cnpj.replace(/\D/g, "") }).then((response) => {
                 setClientes((prevData) => [...prevData, response.data.cliente])
                 Swal.fire({
                     position: 'center',
@@ -199,8 +200,8 @@ export default function Clientes() {
             <Sidebar />
             <ContainerBig maxWidth="80%">
                 {
-                    layoutLoading ? 
-                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80vh'}}>
+                    layoutLoading ?
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80vh' }}>
                             <MagnifyingGlass
                                 visible={true}
                                 height="80"
@@ -212,7 +213,7 @@ export default function Clientes() {
                                 color='#1976D2'
                             />
                         </div>
-                    :
+                        :
                         <>
                             <Typography variant="h5" align="center" gutterBottom style={{ fontWeight: 'bold' }}>
                                 Listagem de clientes
@@ -220,37 +221,39 @@ export default function Clientes() {
                             <Button align="center" variant="contained" color="primary" onClick={handleNovoCliente} style={{ marginBottom: '20px' }}>
                                 Novo cliente
                             </Button>
-                            <TableContainer align="center">
-                                <Table sx={{ maxWidth: 500 }}>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>ID</TableCell>
-                                            <TableCell>Cliente</TableCell>
-                                            <TableCell>CNPJ</TableCell>
-                                            <TableCell>Opções</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {clientes.map((client, i) => (
-                                            <TableRow key={i + 1}>
-                                                <TableCell>{i + 1}</TableCell>
-                                                <TableCell>{client.nome}</TableCell>
-                                                <TableCell>
-                                                    {client.cpf_cnpj}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <IconButton color="primary" onClick={() => handleEditClick(client)}>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                    <IconButton color="warning" onClick={() => handleDeleteClick(client)}>
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </TableCell>
+                            <Card>
+                                <TableContainer align="center">
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell style={{ width: '10%' }}>ID</TableCell>
+                                                <TableCell style={{ width: '50%' }}>Cliente</TableCell>
+                                                <TableCell style={{ width: '30%' }}>CNPJ</TableCell>
+                                                <TableCell style={{ width: '10%' }}>Opções</TableCell>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                                        </TableHead>
+                                        <TableBody>
+                                            {clientes.map((client, i) => (
+                                                <TableRow key={i + 1}>
+                                                    <TableCell>{i + 1}</TableCell>
+                                                    <TableCell>{client.nome}</TableCell>
+                                                    <TableCell>
+                                                        {client.cpf_cnpj}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <IconButton color="primary" onClick={() => handleEditClick(client)}>
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                        <IconButton color="warning" onClick={() => handleDeleteClick(client)}>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Card>
                             <Modal open={openModalDeleteCliente} onClose={handleModalCloseDeleteMotorista}>
                                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', minWidth: '300px', borderRadius: '4px' }}>
                                     <Typography variant="h6" gutterBottom>
@@ -287,7 +290,7 @@ export default function Clientes() {
                                                 size="small"
                                                 required
                                             />
-                                            <div style={{display: 'flex', gap: '10px'}}>
+                                            <div style={{ display: 'flex', gap: '10px' }}>
                                                 <TextField
                                                     label="Email"
                                                     value={selectedClient.email}
@@ -296,7 +299,7 @@ export default function Clientes() {
                                                     margin="normal"
                                                     size="small"
                                                     required
-                                                    />
+                                                />
                                                 <CNPJTextField
                                                     label="CNPJ"
                                                     value={selectedClient.cpf_cnpj}
@@ -329,14 +332,14 @@ export default function Clientes() {
                                             </div>
                                         </div>
                                     )}
-                                        <div>
-                                            <Button variant="outlined" color="primary" onClick={handleModalCloseEditMotorista} style={{ marginRight: '10px' }}>
-                                                Cancelar
-                                            </Button>
-                                            <Button variant="contained" color="success" onClick={editCliente}>
-                                                {loading ? 'Carregando...' : 'Salvar'}
-                                            </Button>
-                                        </div>
+                                    <div>
+                                        <Button variant="outlined" color="primary" onClick={handleModalCloseEditMotorista} style={{ marginRight: '10px' }}>
+                                            Cancelar
+                                        </Button>
+                                        <Button variant="contained" color="success" onClick={editCliente}>
+                                            {loading ? 'Carregando...' : 'Salvar'}
+                                        </Button>
+                                    </div>
                                 </div>
                             </Modal>
                             <Modal open={openModalNovoCliente} onClose={handleModalCloseNovoCliente}>
@@ -344,16 +347,16 @@ export default function Clientes() {
                                     <Typography variant="h6" gutterBottom>
                                         Cadastrar Novo Cliente
                                     </Typography>
-                                        <TextField
-                                            label="Nome"
-                                            value={novoCliente.nome}
-                                            onChange={(e) => setNovoCliente({ ...novoCliente, nome: e.target.value })}
-                                            fullWidth
-                                            margin="normal"
-                                            size="small"
-                                            required
-                                        />
-                                    <div style={{display: 'flex', gap: '10px'}}>
+                                    <TextField
+                                        label="Nome"
+                                        value={novoCliente.nome}
+                                        onChange={(e) => setNovoCliente({ ...novoCliente, nome: e.target.value })}
+                                        fullWidth
+                                        margin="normal"
+                                        size="small"
+                                        required
+                                    />
+                                    <div style={{ display: 'flex', gap: '10px' }}>
                                         <TextField
                                             label="Email"
                                             value={novoCliente.email}
@@ -362,7 +365,7 @@ export default function Clientes() {
                                             margin="normal"
                                             size="small"
                                             required
-                                            />
+                                        />
                                         <CNPJTextField
                                             label="CNPJ"
                                             value={novoCliente.cpf_cnpj}
@@ -374,24 +377,24 @@ export default function Clientes() {
                                         />
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px' }}>
-                                                <TextField
-                                                    label="Valor frete de romaneio - subida"
-                                                    value={novoCliente.valor_frete_subida}
-                                                    onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_subida: e.target.value })}
-                                                    fullWidth
-                                                    margin="normal"
-                                                    size="small"
-                                                    type="number"
-                                                />
-                                                <TextField
-                                                    label="Valor frete de romaneio - descida"
-                                                    value={novoCliente.valor_frete_descida}
-                                                    onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_descida: e.target.value })}
-                                                    fullWidth
-                                                    margin="normal"
-                                                    size="small"
-                                                    type="number"
-                                                />
+                                        <TextField
+                                            label="Valor frete de romaneio - subida"
+                                            value={novoCliente.valor_frete_subida}
+                                            onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_subida: e.target.value })}
+                                            fullWidth
+                                            margin="normal"
+                                            size="small"
+                                            type="number"
+                                        />
+                                        <TextField
+                                            label="Valor frete de romaneio - descida"
+                                            value={novoCliente.valor_frete_descida}
+                                            onChange={(e) => setNovoCliente({ ...novoCliente, valor_frete_descida: e.target.value })}
+                                            fullWidth
+                                            margin="normal"
+                                            size="small"
+                                            type="number"
+                                        />
                                     </div>
                                     <Button variant="outlined" color="primary" onClick={handleModalCloseNovoCliente} style={{ marginRight: '10px' }}>
                                         Cancelar
